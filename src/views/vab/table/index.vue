@@ -27,6 +27,10 @@
       title: 'datetime',
       dataIndex: 'datetime',
     },
+    {
+      title: 'rating',
+      dataIndex: 'rate',
+    },
   ]
 
   export default {

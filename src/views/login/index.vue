@@ -4,7 +4,7 @@
       <a-col :xs="0" :md="0" :sm="12" :lg="14" :xl="16"></a-col>
       <a-col :xs="24" :sm="24" :md="12" :lg="10" :xl="6">
         <div class="login-container-form">
-          <div class="login-container-hello">hello!</div>
+          <div class="login-container-hello">您好!</div>
           <div class="login-container-title">欢迎来到 {{ title }}</div>
           <a-form :model="form" @submit="handleSubmit" @submit.prevent>
             <a-form-item>
@@ -42,19 +42,27 @@
       基于vue{{ dependencies['vue'] }}
       + ant-design-vue
       {{ dependencies['ant-design-vue'] }}开发
+      <br />
+      Developed by Haonan Xiong with
+      <heart-outlined></heart-outlined>
     </div>
   </div>
 </template>
 <script>
   import { dependencies, devDependencies } from '*/package.json'
   import { mapActions, mapGetters } from 'vuex'
-  import { UserOutlined, LockOutlined } from '@ant-design/icons-vue'
+  import {
+    UserOutlined,
+    LockOutlined,
+    HeartOutlined,
+  } from '@ant-design/icons-vue'
 
   export default {
     name: 'Login',
     components: {
       UserOutlined,
       LockOutlined,
+      HeartOutlined,
     },
     data() {
       return {

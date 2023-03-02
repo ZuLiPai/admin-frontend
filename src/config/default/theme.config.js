@@ -11,7 +11,7 @@ const theme = {
   //是否显示顶部进度条
   showProgressBar: true,
   //是否显示多标签页
-  showTabsBar: true,
+  showTabsBar: false,
   //是否显示语言选择组件
   showLanguage: true,
   //是否显示刷新组件

@@ -47,7 +47,7 @@
           </a-col>
         </a-row>
       </a-layout-header>
-      <vab-tabs />
+      <!--      <vab-tabs />-->
       <vab-content />
     </a-layout>
   </a-layout>
@@ -56,7 +56,7 @@
   import VabLogo from './vab-logo'
   import VabAvatar from './vab-avatar'
   import VabMenu from './vab-menu'
-  import VabTabs from './vab-tabs'
+  // import VabTabs from './vab-tabs'
   import VabContent from './vab-content'
   import { mapActions, mapGetters } from 'vuex'
   import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons-vue'
@@ -66,7 +66,7 @@
       VabLogo,
       VabAvatar,
       VabMenu,
-      VabTabs,
+      // VabTabs,
       VabContent,
       MenuUnfoldOutlined,
       MenuFoldOutlined,
