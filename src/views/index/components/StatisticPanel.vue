@@ -1,84 +1,61 @@
 <template>
   <a-row>
-    <a-col :xl="12" :xs="24">
-      <a-card>
-        <a-row>
+    <a-col :lg="12" :xs="24">
+      <a-card title="相机订单">
+        <a-row :style="{ minHeight: '250px' }">
           <a-col :span="12">
-            <a-statistic
-              title="Active Users"
-              :value="112893"
-              style="margin-right: 50px"
-            />
+            <div
+              id="chartTransactionCategory"
+              :style="{ height: '100%', width: '100%' }"
+            ></div>
           </a-col>
           <a-col :span="12">
-            <a-statistic
-              title="Account Balance (CNY)"
-              :precision="2"
-              :value="112893"
-            />
+            <div
+              id="chartTransactionBrand"
+              :style="{ height: '100%', width: '100%' }"
+            ></div>
           </a-col>
         </a-row>
       </a-card>
     </a-col>
-    <a-col :xl="12" :xs="24">
-      <!--      <div id="myEcharts" :style="{ width: '900px', height: '300px' }"></div>-->
-      <a-card>
-        <a-row>
-          <a-col :span="12">
-            <a-statistic
-              title="Active Users"
-              :value="112893"
-              style="margin-right: 50px"
-            />
-          </a-col>
-          <a-col :span="12">
-            <a-statistic
-              title="Account Balance (CNY)"
-              :precision="2"
-              :value="112893"
-            />
+    <a-col :lg="12" :xs="24">
+      <a-card title="评价">
+        <a-row :style="{ minHeight: '250px' }">
+          <a-col :span="24">
+            <div
+              id="chartRating"
+              :style="{ height: '100%', width: '100%' }"
+            ></div>
           </a-col>
         </a-row>
       </a-card>
     </a-col>
   </a-row>
   <a-row>
-    <a-col :xl="12" :xs="24">
-      <a-card>
-        <a-row>
+    <a-col :lg="12" :xs="24">
+      <a-card title="相机销售额">
+        <a-row :style="{ minHeight: '250px' }">
           <a-col :span="12">
             <a-statistic
-              title="Active Users"
-              :value="112893"
+              title="当日销售额"
+              :value="11289"
               style="margin-right: 50px"
             />
           </a-col>
           <a-col :span="12">
-            <a-statistic
-              title="Account Balance (CNY)"
-              :precision="2"
-              :value="112893"
-            />
+            <a-statistic title="近30日销售额" :value="839279" />
           </a-col>
         </a-row>
       </a-card>
     </a-col>
-    <a-col :xl="12" :xs="24">
-      <a-card>
-        <a-row>
-          <a-col :span="12">
-            <a-statistic
-              title="Active Users"
-              :value="112893"
-              style="margin-right: 50px"
-            />
-          </a-col>
-          <a-col :span="12">
-            <a-statistic
-              title="Account Balance (CNY)"
-              :precision="2"
-              :value="112893"
-            />
+    <a-col :lg="12" :xs="24">
+      <a-card title="工单数量">
+        <a-row :style="{ minHeight: '250px' }">
+          <a-col :span="24">
+            <div
+              id="chartTicket"
+              :style="{ height: '100%', width: '100%' }"
+            ></div>
           </a-col>
         </a-row>
       </a-card>
@@ -92,50 +69,120 @@
   export default {
     name: 'StatisticPanel',
     setup() {
-      let echart = echarts
       onMounted(() => {
-        // initChart()
+        initChart()
       })
 
       function initChart() {
-        let chart = echart.init(document.getElementById('myEcharts'))
-        chart.setOption({
+        let chartTransactionCategory = echarts.init(
+          document.getElementById('chartTransactionCategory')
+        )
+        chartTransactionCategory.setOption({
+          tooltip: {
+            trigger: 'item',
+          },
+          series: [
+            {
+              name: '相机类型',
+              type: 'pie',
+              radius: '50%',
+              data: [
+                { value: 1048, name: '镜头' },
+                { value: 835, name: '相机' },
+                { value: 300, name: '无人机' },
+              ],
+              emphasis: {
+                itemStyle: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)',
+                },
+              },
+            },
+          ],
+        })
+
+        let chartTransactionBrand = echarts.init(
+          document.getElementById('chartTransactionBrand')
+        )
+        chartTransactionBrand.setOption({
+          tooltip: {
+            trigger: 'item',
+          },
+          yAxis: {
+            type: 'category',
+            data: ['佳能', '索尼', '大疆', '尼康', '富士'],
+          },
+          xAxis: {
+            type: 'value',
+          },
+          series: [
+            {
+              data: [298, 200, 150, 80, 70],
+              type: 'bar',
+              color: '#66ccff',
+            },
+          ],
+        })
+
+        let chartRating = echarts.init(document.getElementById('chartRating'))
+        chartRating.setOption({
+          tooltip: {
+            trigger: 'item',
+          },
           xAxis: {
             type: 'category',
-            data: [
-              '一月',
-              '二月',
-              '三月',
-              '四月',
-              '五月',
-              '六月',
-              '七月',
-              '八月',
-              '九月',
-              '十月',
-              '十一月',
-              '十二月',
-            ],
-          },
-          tooltip: {
-            trigger: 'axis',
+            data: ['1星', '2星', '3星', '4星', '5星'],
           },
           yAxis: {
             type: 'value',
           },
           series: [
             {
-              data: [
-                820, 932, 901, 934, 1290, 1330, 1320, 801, 102, 230, 4321, 4129,
-              ],
+              data: [12, 10, 15, 11, 40],
+              type: 'bar',
+              color: '#e36c6c',
+            },
+          ],
+        })
+
+        let chartTicket = echarts.init(document.getElementById('chartTicket'))
+        chartTicket.setOption({
+          tooltip: {
+            trigger: 'axis',
+          },
+          legend: {
+            data: ['总工单数量', '已处理工单'],
+          },
+          xAxis: {
+            type: 'category',
+            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          },
+          yAxis: {
+            type: 'value',
+          },
+          series: [
+            {
+              name: '总工单数量',
+              data: [82, 93, 90, 108, 129, 133, 132],
+              type: 'line',
+              smooth: true,
+            },
+            {
+              name: '已处理工单',
+              data: [135, 120, 110, 90, 80, 75, 60],
               type: 'line',
               smooth: true,
             },
           ],
         })
+
         window.onresize = function () {
           //自适应大小
-          chart.resize()
+          chartTransactionCategory.resize()
+          chartTransactionBrand.resize()
+          chartRating.resize()
+          chartTicket.resize()
         }
       }
       return { initChart }
