@@ -5,7 +5,11 @@
       <a-col :xs="24" :sm="24" :md="12" :lg="10" :xl="6">
         <div class="login-container-form">
           <div class="login-container-hello">您好!</div>
-          <div class="login-container-title">欢迎来到 {{ title }}</div>
+          <div class="login-container-title">
+            欢迎使用
+            <br />
+            {{ title }}
+          </div>
           <a-form :model="form" @submit="handleSubmit" @submit.prevent>
             <a-form-item>
               <a-input v-model:value="form.username" placeholder="Username">
@@ -43,7 +47,7 @@
       + ant-design-vue
       {{ dependencies['ant-design-vue'] }}开发
       <br />
-      Developed by Haonan Xiong with
+      Developed by MaLiXie Team with
       <heart-outlined></heart-outlined>
     </div>
   </div>

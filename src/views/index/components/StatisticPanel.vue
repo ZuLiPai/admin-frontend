@@ -90,7 +90,7 @@
   import * as echarts from 'echarts'
   import { onMounted } from 'vue'
   export default {
-    name: 'StaticPanel',
+    name: 'StatisticPanel',
     setup() {
       let echart = echarts
       onMounted(() => {
