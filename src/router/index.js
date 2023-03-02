@@ -26,8 +26,8 @@ export const asyncRoutes = [
     component: Layout,
     redirect: '/index',
     meta: {
-      title: '首页',
-      icon: 'home-4-line',
+      title: '仪表盘',
+      icon: 'dashboard-3-line',
       affix: true,
     },
     children: [
@@ -36,59 +36,147 @@ export const asyncRoutes = [
         name: 'Index',
         component: () => import('@/views/index'),
         meta: {
-          title: '首页',
-          icon: 'home-4-line',
+          title: '仪表盘',
+          icon: 'dashboard-3-line',
           affix: true,
         },
       },
     ],
   },
   {
-    path: '/vab',
+    path: '/transaction',
     component: Layout,
-    redirect: '/vab/table',
+    redirect: '/transaction/all',
     alwaysShow: true,
     meta: {
-      title: '组件',
+      title: '订单管理',
       icon: 'apps-line',
     },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/vab/table'),
+        path: 'all',
+        name: 'All Transaction',
+        component: () => import('@/views/transaction/AllTransaction'),
         meta: {
-          title: '表格',
+          title: '全部订单',
           icon: 'table-2',
         },
       },
       {
-        path: 'icon',
-        name: 'Icon',
-        component: () => import('@/views/vab/icon'),
+        path: 'send',
+        name: 'Send',
+        component: () => import('@/views/transaction/SendTransaction'),
         meta: {
-          title: '图标',
-          icon: 'remixicon-line',
+          title: '待发货',
+          icon: 'truck-line',
+        },
+      },
+      {
+        path: 'receive',
+        name: 'Receive',
+        component: () => import('@/views/transaction/ReceiveTransaction'),
+        meta: {
+          title: '待签收验机',
+          icon: 'store-2-line',
+        },
+      },
+      {
+        path: 'compensate',
+        name: 'Compensate',
+        component: () => import('@/views/transaction/CompensateTransaction'),
+        meta: {
+          title: '待处理赔偿',
+          icon: 'money-cny-circle-line',
         },
       },
     ],
   },
   {
-    path: '/test',
+    path: '/item',
     component: Layout,
-    redirect: '/test/test',
+    redirect: '/item/all',
+    alwaysShow: true,
     meta: {
-      title: '动态路由测试',
-      icon: 'test-tube-line',
+      title: '商品管理',
+      icon: 'camera-3-line',
     },
     children: [
       {
-        path: 'test',
-        name: 'Test',
-        component: () => import('@/views/test'),
+        path: 'all',
+        name: 'All Item',
+        component: () => import('@/views/item/AllItem'),
         meta: {
-          title: '动态路由测试',
-          icon: 'test-tube-line',
+          title: '信息管理',
+          icon: 'camera-3-line',
+        },
+      },
+      {
+        path: 'comment',
+        name: 'Comment',
+        component: () => import('@/views/item/AllComment'),
+        meta: {
+          title: '评论管理',
+          icon: 'chat-heart-line',
+        },
+      },
+    ],
+  },
+  {
+    path: '/bulletin',
+    component: Layout,
+    redirect: '/bulletin',
+    meta: {
+      title: '公告管理',
+      icon: 'notification-3-line',
+    },
+    children: [
+      {
+        path: '',
+        name: 'Bulletin',
+        component: () => import('@/views/bulletin'),
+        meta: {
+          title: '公告管理',
+          icon: 'notification-3-line',
+        },
+      },
+    ],
+  },
+  {
+    path: '/ticket',
+    component: Layout,
+    redirect: '/ticket',
+    meta: {
+      title: '工单管理',
+      icon: 'ticket-2-line',
+    },
+    children: [
+      {
+        path: '',
+        name: 'Ticket',
+        component: () => import('@/views/ticket'),
+        meta: {
+          title: '工单管理',
+          icon: 'ticket-2-line',
+        },
+      },
+    ],
+  },
+  {
+    path: '/user',
+    component: Layout,
+    redirect: '/user',
+    meta: {
+      title: '用户管理',
+      icon: 'user-3-line',
+    },
+    children: [
+      {
+        path: '',
+        name: 'User',
+        component: () => import('@/views/user'),
+        meta: {
+          title: '用户管理',
+          icon: 'user-3-line',
         },
       },
     ],
