@@ -186,6 +186,7 @@ export const asyncRoutes = [
     name: 'Error',
     component: Layout,
     redirect: '/error/403',
+    hidden: true,
     meta: {
       title: '错误页',
       icon: 'error-warning-line',
@@ -212,7 +213,7 @@ export const asyncRoutes = [
     ],
   },
   {
-    path: '/*',
+    path: '/:pathMatch(.*)*',
     redirect: '/404',
     hidden: true,
   },
