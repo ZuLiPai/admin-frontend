@@ -1,6 +1,34 @@
 <template>
   <a-row>
     <a-col :lg="12" :xs="24">
+      <a-card title="相机销售额" :style="{ minHeight: '250px' }">
+        <a-row>
+          <a-col :span="12">
+            <a-statistic
+              title="当日销售额"
+              :value="11289"
+              style="margin-right: 50px"
+            />
+          </a-col>
+          <a-col :span="12">
+            <a-statistic title="近30日销售额" :value="839279" />
+          </a-col>
+        </a-row>
+        <a-row style="margin-top: 50px">
+          <a-col :span="12">
+            <a-statistic
+              title="近30日销售量"
+              :value="173"
+              style="margin-right: 50px"
+            />
+          </a-col>
+          <a-col :span="12">
+            <a-statistic title="待归还数量" :value="108" />
+          </a-col>
+        </a-row>
+      </a-card>
+    </a-col>
+    <a-col :lg="12" :xs="24">
       <a-card title="相机订单">
         <a-row :style="{ minHeight: '250px' }">
           <a-col :span="12">
@@ -18,6 +46,8 @@
         </a-row>
       </a-card>
     </a-col>
+  </a-row>
+  <a-row>
     <a-col :lg="12" :xs="24">
       <a-card title="评价">
         <a-row :style="{ minHeight: '250px' }">
@@ -26,24 +56,6 @@
               id="chartRating"
               :style="{ height: '100%', width: '100%' }"
             ></div>
-          </a-col>
-        </a-row>
-      </a-card>
-    </a-col>
-  </a-row>
-  <a-row>
-    <a-col :lg="12" :xs="24">
-      <a-card title="相机销售额">
-        <a-row :style="{ minHeight: '250px' }">
-          <a-col :span="12">
-            <a-statistic
-              title="当日销售额"
-              :value="11289"
-              style="margin-right: 50px"
-            />
-          </a-col>
-          <a-col :span="12">
-            <a-statistic title="近30日销售额" :value="839279" />
           </a-col>
         </a-row>
       </a-card>
