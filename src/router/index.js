@@ -55,8 +55,8 @@ export const asyncRoutes = [
     children: [
       {
         path: 'all',
-        name: 'All Transaction',
-        component: () => import('@/views/transaction/AllTransaction'),
+        name: 'AllTransaction',
+        component: () => import('@/views/transaction/AllTransaction.vue'),
         meta: {
           title: '全部订单',
           icon: 'table-2',
@@ -65,7 +65,7 @@ export const asyncRoutes = [
       {
         path: 'send',
         name: 'Send',
-        component: () => import('@/views/transaction/SendTransaction'),
+        component: () => import('@/views/transaction/SendTransaction.vue'),
         meta: {
           title: '待发货',
           icon: 'truck-line',
@@ -74,7 +74,7 @@ export const asyncRoutes = [
       {
         path: 'receive',
         name: 'Receive',
-        component: () => import('@/views/transaction/ReceiveTransaction'),
+        component: () => import('@/views/transaction/ReceiveTransaction.vue'),
         meta: {
           title: '待签收验机',
           icon: 'store-2-line',
@@ -83,7 +83,8 @@ export const asyncRoutes = [
       {
         path: 'compensate',
         name: 'Compensate',
-        component: () => import('@/views/transaction/CompensateTransaction'),
+        component: () =>
+          import('@/views/transaction/CompensateTransaction.vue'),
         meta: {
           title: '待处理赔偿',
           icon: 'money-cny-circle-line',
@@ -103,8 +104,8 @@ export const asyncRoutes = [
     children: [
       {
         path: 'all',
-        name: 'All Item',
-        component: () => import('@/views/item/AllItem'),
+        name: 'AllItem',
+        component: () => import('@/views/item/AllItem.vue'),
         meta: {
           title: '信息管理',
           icon: 'camera-3-line',
@@ -113,7 +114,7 @@ export const asyncRoutes = [
       {
         path: 'comment',
         name: 'Comment',
-        component: () => import('@/views/item/AllComment'),
+        component: () => import('@/views/item/AllComment.vue'),
         meta: {
           title: '评论管理',
           icon: 'chat-heart-line',
