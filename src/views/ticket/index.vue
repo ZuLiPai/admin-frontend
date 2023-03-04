@@ -9,17 +9,11 @@
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="24">
-            <a-form-item label="订单状态">
+            <a-form-item label="工单状态">
               <a-select placeholder="请选择">
                 <a-select-option value="0">全部</a-select-option>
-                <a-select-option value="1">已下单</a-select-option>
-                <a-select-option value="2">物流中</a-select-option>
-                <a-select-option value="3">租赁中</a-select-option>
-                <a-select-option value="4">发回物流中</a-select-option>
-                <a-select-option value="5">验机中</a-select-option>
-                <a-select-option value="6">赔偿中</a-select-option>
-                <a-select-option value="7">已完成</a-select-option>
-                <a-select-option value="8">已取消</a-select-option>
+                <a-select-option value="1">已读</a-select-option>
+                <a-select-option value="2">未读</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -33,7 +27,7 @@
               <a-form-item label="工单日期">
                 <a-date-picker
                   style="width: 100%"
-                  placeholder="请输入更新日期"
+                  placeholder="请输入工单日期"
                 />
               </a-form-item>
             </a-col>
@@ -43,13 +37,8 @@
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="内容">
+              <a-form-item label="工单内容">
                 <a-input style="width: 100%" />
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="支付金额">
-                <a-input-number style="width: 100%" />
               </a-form-item>
             </a-col>
           </template>
@@ -88,7 +77,10 @@
             </a>
           </template>
           <template v-if="column.key === 'status'">
-            <a-badge status="processing" :text="record.status" />
+            <a-badge
+              :status="record.status === '已读' ? 'success' : 'error'"
+              :text="record.status"
+            />
           </template>
           <template v-else-if="column.key === 'action'">
             <span>
