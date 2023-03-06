@@ -87,7 +87,10 @@
             </a>
           </template>
           <template v-if="column.key === 'status'">
-            <a-badge status="processing" :text="record.status" />
+            <a-badge
+              :status="record.status === '赔偿中' ? 'warning' : 'processing'"
+              :text="record.status"
+            />
           </template>
           <template v-else-if="column.key === 'action'">
             <span>
