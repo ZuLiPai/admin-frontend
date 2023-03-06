@@ -112,12 +112,28 @@ export const asyncRoutes = [
         },
       },
       {
+        path: '1',
+        name: 'ItemDetail',
+        component: () => import('@/views/item/ItemDetail.vue'),
+        meta: {
+          title: '相机详情',
+        },
+      },
+      {
         path: 'comment',
         name: 'Comment',
         component: () => import('@/views/item/AllComment.vue'),
         meta: {
           title: '评论管理',
           icon: 'chat-heart-line',
+        },
+      },
+      {
+        path: 'comment/1',
+        name: 'CommentDetail',
+        component: () => import('@/views/item/CommentDetail.vue'),
+        meta: {
+          title: '评论详情',
         },
       },
     ],
