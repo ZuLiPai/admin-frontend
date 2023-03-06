@@ -11,29 +11,32 @@
       label="用户名"
       :rules="[{ required: true }]"
     >
-      <a-input v-model:value="formState.user.name" />
+      <a-input v-model:value="formState.user.name" :disabled="isModifying" />
     </a-form-item>
     <a-form-item
       :name="['user', 'phone']"
       label="手机号"
       :rules="[{ required: true }]"
     >
-      <a-input v-model:value="formState.user.phone" />
+      <a-input v-model:value="formState.user.phone" :disabled="isModifying" />
     </a-form-item>
     <a-form-item
       :name="['user', 'email']"
       label="电子邮箱"
       :rules="[{ required: false }]"
     >
-      <a-input v-model:value="formState.user.email" />
+      <a-input v-model:value="formState.user.email" :disabled="isModifying" />
     </a-form-item>
     <a-form-item :wrapper-col="{ ...layout.wrapperCol, offset: 8 }">
-      <a-button type="primary" html-type="submit">保存</a-button>
+      <a-button type="primary" html-type="submit" @click="changeModify">
+        修改
+      </a-button>
     </a-form-item>
   </a-form>
 </template>
 <script>
-  import { defineComponent, reactive } from 'vue'
+  import { defineComponent, reactive, ref } from 'vue'
+
   export default defineComponent({
     setup() {
       const layout = {
@@ -64,11 +67,17 @@
       const onFinish = (values) => {
         console.log('Success:', values)
       }
+      const isModifying = ref(true)
+      const changeModify = () => {
+        isModifying.value = !isModifying.value
+      }
       return {
         formState,
         onFinish,
         layout,
         validateMessages,
+        isModifying,
+        changeModify,
       }
     },
   })

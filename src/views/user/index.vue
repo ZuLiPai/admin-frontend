@@ -1,10 +1,14 @@
 <template>
-  <a-empty></a-empty>
+  <UserTable></UserTable>
 </template>
 
 <script>
+  import UserTable from '@/views/user/components/UserTable.vue'
   export default {
-    name: 'index',
+    components: { UserTable },
+    setup() {
+      return { UserTable }
+    },
   }
 </script>
 
