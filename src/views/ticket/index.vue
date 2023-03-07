@@ -1,11 +1,5 @@
 <template>
   <div>
-    <div class="components-page-header-demo-responsive">
-      <a-page-header
-        title="工单管理"
-        @back="() => $router.go(-1)"
-      ></a-page-header>
-    </div>
     <a-row>
       <a-col :span="12">
         <h1>工单管理</h1>

@@ -5,144 +5,80 @@
     <div class="components-page-header-demo-responsive">
       <a-page-header title="公告管理" @back="() => $router.go(-1)">
         <template #extra>
-          <a-button key="1" type="primary">创建公告</a-button>
+          <a-button key="1" type="primary" @click="showModal">
+            创建公告
+          </a-button>
         </template>
       </a-page-header>
     </div>
+    <div>
+      <a-modal v-model:visible="visible" title="上传公告" @ok="handleOk">
+        <a-upload-dragger
+          v-model:fileList="fileList"
+          name="file"
+          :multiple="true"
+          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+          @change="handleChange"
+          @drop="handleDrop"
+        >
+          <p class="ant-upload-drag-icon">
+            <inbox-outlined></inbox-outlined>
+          </p>
+          <p class="ant-upload-text">点击此处或把图片拖到这里上传公告</p>
+        </a-upload-dragger>
+
+        <a-input placeholder="公告标题" style="margin-top: 10px" />
+      </a-modal>
+    </div>
     <div class="bulletin-card">
-      <a-form layout="horizontal">
-        <a-form
-          label="公告列表"
-          style="font-size: 2px; font-weight: bold"
-        ></a-form>
-        <a-row :gutter="24">
-          <a-col :md="8" :sm="24">
-            <a-card hoverable loading>
-              <template #cover style="height: 200px">
-                <img
-                  alt="example"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                />
-              </template>
-              <template #actions>
-                <left-outlined key="move left" />
-                <delete-outlined key="delete" />
-                <right-outlined key="move right" />
-              </template>
-              <a-card-meta
-                title="Card title"
-                description="This is the description"
-              ></a-card-meta>
-            </a-card>
-          </a-col>
-          <a-col :md="8" :sm="24">
-            <a-card hoverable>
-              <template #cover>
-                <img
-                  alt="example"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                />
-              </template>
-              <template #actions>
-                <left-outlined key="move left" />
-                <delete-outlined key="delete" />
-                <right-outlined key="move right" />
-              </template>
-              <a-card-meta
-                title="Card title"
-                description="This is the description"
-              ></a-card-meta>
-            </a-card>
-          </a-col>
-          <a-col :md="8" :sm="24">
-            <a-card hoverable>
-              <template #cover>
-                <img
-                  alt="example"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                />
-              </template>
-              <template #actions>
-                <left-outlined key="move left" />
-                <delete-outlined key="delete" />
-                <right-outlined key="move right" />
-              </template>
-              <a-card-meta
-                title="Card title"
-                description="This is the description"
-              ></a-card-meta>
-            </a-card>
-          </a-col>
-          <a-col :md="8" :sm="24">
-            <a-card hoverable>
-              <template #cover>
-                <img
-                  alt="example"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                />
-              </template>
-              <template #actions>
-                <left-outlined key="move left" />
-                <delete-outlined key="delete" />
-                <right-outlined key="move right" />
-              </template>
-              <a-card-meta
-                title="Card title"
-                description="This is the description"
-              ></a-card-meta>
-            </a-card>
-          </a-col>
-          <a-col :md="8" :sm="24">
-            <a-card hoverable>
-              <template #cover>
-                <img
-                  alt="example"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                />
-              </template>
-              <template #actions>
-                <left-outlined key="move left" />
-                <delete-outlined key="delete" />
-                <right-outlined key="move right" />
-              </template>
-              <a-card-meta
-                title="Card title"
-                description="This is the description"
-              ></a-card-meta>
-            </a-card>
-          </a-col>
-        </a-row>
-      </a-form>
+      <a-row>
+        <a-col :span="24">
+          <BulletinCard />
+        </a-col>
+        <a-col :span="24">
+          <BulletinCard />
+        </a-col>
+        <a-col :span="24">
+          <BulletinCard />
+        </a-col>
+        <a-col :span="24">
+          <BulletinCard />
+        </a-col>
+        <a-col :span="24">
+          <BulletinCard />
+        </a-col>
+        <a-col :span="24">
+          <BulletinCard />
+        </a-col>
+      </a-row>
     </div>
   </div>
 </template>
 
 <script>
-  import {
-    LeftOutlined,
-    RightOutlined,
-    DeleteOutlined,
-  } from '@ant-design/icons-vue'
-  import { defineComponent } from 'vue'
+  import { defineComponent, ref } from 'vue'
+  import { InboxOutlined } from '@ant-design/icons-vue'
+  import BulletinCard from '@/views/bulletin/components/BulletinCard.vue'
   export default defineComponent({
     name: 'index',
     components: {
-      LeftOutlined,
-      RightOutlined,
-      DeleteOutlined,
+      BulletinCard,
+      InboxOutlined,
     },
     setup() {
-      return {
-        dataSource: [],
+      const visible = ref(false)
+      const showModal = () => {
+        visible.value = !visible.value
       }
+      const handleOk = () => {
+        visible.value = false
+      }
+      return { visible, showModal, handleOk }
     },
   })
 </script>
 
 <style scoped lang="less">
-  .ant-card {
-    margin-bottom: 10px;
-  }
   .table-search {
     .ant-form-inline {
       .ant-form-item {
