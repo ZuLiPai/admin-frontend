@@ -1,5 +1,11 @@
 <template>
   <div>
+    <div class="components-page-header-demo-responsive">
+      <a-page-header
+        title="工单管理"
+        @back="() => $router.go(-1)"
+      ></a-page-header>
+    </div>
     <div class="table-search">
       <a-form layout="inline">
         <a-row :gutter="48">
