@@ -1,19 +1,16 @@
 <template>
   <div>
     <a-row>
-      <a-col>
-        {{ itemName }}
-      </a-col>
-      <a-col>
-        {{ username }}
-      </a-col>
-    </a-row>
-    <a-row>
-      <a-col>
-        <a-rate v-model:value="rating" allow-half disabled></a-rate>
-      </a-col>
-      <a-col>
-        {{ comment }}
+      <a-col :lg="{ span: 12, offset: 6 }" :xs="24">
+        <a-card :title="username" style="width: 100%">
+          <template #extra>
+            <a href="#">{{ itemName }}</a>
+          </template>
+          <a-rate v-model:value="rating" allow-half disabled></a-rate>
+          <p>
+            {{ comment }}
+          </p>
+        </a-card>
       </a-col>
     </a-row>
   </div>

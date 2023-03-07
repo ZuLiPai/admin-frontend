@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-row style="margin-bottom: 20px" :gutter="16">
+    <a-row :gutter="16">
       <a-col :lg="12" :xs="24">
         <a-image
           :width="200"
@@ -11,7 +11,7 @@
         <a-input placeholder="相机名称" style="float: left" />
       </a-col>
     </a-row>
-    <a-row style="margin-bottom: 20px" :gutter="16">
+    <a-row :gutter="16">
       <a-col :span="12" style="float: right">
         <a-tag closable>Tag 1</a-tag>
         <a-tag closable>Tag 2</a-tag>
@@ -24,7 +24,7 @@
         </a-input-group>
       </a-col>
     </a-row>
-    <a-row style="margin-bottom: 20px">
+    <a-row>
       <a-col :span="24">
         <a-textarea placeholder="相机详细描述" :rows="16" />
       </a-col>
@@ -46,4 +46,8 @@
   }
 </script>
 
-<style scoped></style>
+<style scoped>
+  .ant-row {
+    margin-bottom: 10px;
+  }
+</style>

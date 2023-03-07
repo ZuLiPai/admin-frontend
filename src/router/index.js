@@ -116,7 +116,7 @@ export const asyncRoutes = [
         name: 'ItemDetail',
         component: () => import('@/views/item/ItemDetail.vue'),
         meta: {
-          title: '相机详情',
+          title: '商品详情',
         },
       },
       {
@@ -174,6 +174,14 @@ export const asyncRoutes = [
         meta: {
           title: '工单管理',
           icon: 'ticket-2-line',
+        },
+      },
+      {
+        path: '1',
+        name: 'TicketDetail',
+        component: () => import('@/views/ticket/TicketDetail'),
+        meta: {
+          title: '工单详情',
         },
       },
     ],
