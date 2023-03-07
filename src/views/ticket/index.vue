@@ -1,5 +1,16 @@
 <template>
   <div>
+    <a-row>
+      <a-col :span="12">
+        <h1>工单管理</h1>
+      </a-col>
+      <a-col :span="12">
+        <a-button type="primary" style="float: right">
+          <PlusOutlined />
+          创建工单
+        </a-button>
+      </a-col>
+    </a-row>
     <div class="table-search">
       <a-form layout="inline">
         <a-row :gutter="48">
@@ -97,13 +108,14 @@
 
 <script>
   import { ref } from 'vue'
-  import { UpOutlined, DownOutlined } from '@ant-design/icons-vue'
+  import { UpOutlined, DownOutlined, PlusOutlined } from '@ant-design/icons-vue'
 
   export default {
     name: 'index',
     components: {
       UpOutlined,
       DownOutlined,
+      PlusOutlined,
     },
     setup() {
       const advanced = ref(false)

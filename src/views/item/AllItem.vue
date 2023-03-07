@@ -1,5 +1,16 @@
 <template>
   <div>
+    <a-row>
+      <a-col :span="12">
+        <h1>产品管理</h1>
+      </a-col>
+      <a-col :span="12">
+        <a-button type="primary" style="float: right">
+          <PlusOutlined />
+          添加产品
+        </a-button>
+      </a-col>
+    </a-row>
     <a-table :columns="columns" :data-source="data">
       <template #headerCell="{ column }">
         <template v-if="column.key === 'name'">
@@ -62,7 +73,7 @@
 
 <script>
   import { defineComponent } from 'vue'
-  import { DownOutlined } from '@ant-design/icons-vue'
+  import { DownOutlined, PlusOutlined } from '@ant-design/icons-vue'
 
   const columns = [
     {
@@ -201,6 +212,7 @@
     name: 'AllItem',
     components: {
       DownOutlined,
+      PlusOutlined,
     },
     setup() {
       return {
