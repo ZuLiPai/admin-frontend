@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-row>
-      <a-col :lg="{ span: 12, offset: 6 }" :xs="24">
+      <a-col :span="24">
         <a-card :title="username" style="width: 100%">
           <template #extra>
             <a href="#">{{ itemName }}</a>

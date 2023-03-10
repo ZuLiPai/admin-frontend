@@ -128,14 +128,6 @@ export const asyncRoutes = [
           icon: 'chat-heart-line',
         },
       },
-      {
-        path: 'comment/1',
-        name: 'CommentDetail',
-        component: () => import('@/views/item/CommentDetail.vue'),
-        meta: {
-          title: '评论详情',
-        },
-      },
     ],
   },
   {

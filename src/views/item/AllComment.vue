@@ -84,11 +84,12 @@
               <a @click="showDetail">查看</a>
               <a-modal
                 v-model:visible="visible"
-                :title="record.username + '对' + record.item + '的评论详情'"
+                title="评论详情"
                 @ok="handleOk"
               >
-                <p>{{ record.rating }}分</p>
-                <p>{{ record.comment }}</p>
+                <!--                <p>{{ record.rating }}分</p>-->
+                <!--                <p>{{ record.comment }}</p>-->
+                <comment-detail />
               </a-modal>
               <a-divider type="vertical" />
               <a-popconfirm
@@ -111,6 +112,7 @@
 <script>
   import { ref } from 'vue'
   import { UpOutlined, DownOutlined } from '@ant-design/icons-vue'
+  import CommentDetail from '@/views/item/CommentDetail.vue'
 
   const columns = [
     {
@@ -163,6 +165,7 @@
   export default {
     name: 'AllComment',
     components: {
+      CommentDetail,
       UpOutlined,
       DownOutlined,
     },
