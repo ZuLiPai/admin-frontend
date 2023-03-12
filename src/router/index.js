@@ -176,6 +176,12 @@ export const asyncRoutes = [
           title: '工单详情',
         },
       },
+      {
+        path: 'create',
+        name: ' CreateTicket',
+        component: () => import('@/views/ticket/CreateTicket'),
+        meta: { title: '创建工单' },
+      },
     ],
   },
   {
