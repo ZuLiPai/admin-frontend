@@ -90,6 +90,15 @@ export const asyncRoutes = [
           icon: 'money-cny-circle-line',
         },
       },
+      {
+        path: 'detail',
+        name: 'Detail',
+        component: () => import('@/views/transaction/OrderDetail.vue'),
+        meta: {
+          title: '订单详情',
+          icon: 'bars-outlined',
+        },
+      },
     ],
   },
   {
