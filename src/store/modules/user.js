@@ -2,11 +2,13 @@
  * @author chuzhixin 1204505056@qq.com
  * @description 登录、获取用户信息、退出登录、清除accessToken逻辑，不建议修改
  */
-import { getUserInfo, login, logout } from '@/api/user'
+// eslint-disable-next-line no-unused-vars
+import { getUserInfo, loginToken, logout } from '@/api/user'
 import {
   getAccessToken,
   removeAccessToken,
   setAccessToken,
+  setRefreshToken,
 } from '@/utils/accessToken'
 import { title, tokenName } from '@/config'
 import { message, notification } from 'ant-design-vue'
@@ -31,6 +33,10 @@ const mutations = {
   setAccessToken(state, accessToken) {
     state.accessToken = accessToken
     setAccessToken(accessToken)
+  },
+  setRefreshToken(state, refreshToken) {
+    state.refreshToken = refreshToken
+    setRefreshToken(refreshToken)
   },
   /**
    * @author chuzhixin 1204505056@qq.com
@@ -69,10 +75,14 @@ const actions = {
    * @param {*} userInfo
    */
   async login({ commit }, userInfo) {
-    const { data } = await login(userInfo)
+    // const { data } = await login(userInfo)
+    const { data } = await loginToken(userInfo)
+    console.log(data)
     const accessToken = data[tokenName]
-    if (accessToken) {
+    const refreshToken = data['refresh']
+    if (accessToken && refreshToken) {
       commit('setAccessToken', accessToken)
+      commit('setRefreshToken', refreshToken)
       const hour = new Date().getHours()
       const thisTime =
         hour < 8
@@ -98,8 +108,15 @@ const actions = {
    * @param {*} { commit, dispatch, state }
    * @returns
    */
+  // eslint-disable-next-line no-unused-vars
   async getUserInfo({ commit, dispatch, state }) {
-    const { data } = await getUserInfo(state.accessToken)
+    // const { data } = await getUserInfo(state.accessToken)
+    const data = {
+      username: 'admin1',
+      roles: ['admin'],
+      ability: ['READ', 'WRITE', 'DELETE'],
+      avatar: 'https://i.gtimg.cn/club/item/face/img/8/15918_100.gif',
+    }
     if (!data) {
       message.error(`验证失败，请重新登录...`)
       return false
@@ -122,7 +139,7 @@ const actions = {
    * @param {*} { dispatch }
    */
   async logout({ dispatch }) {
-    await logout(state.accessToken)
+    // await logout(state.accessToken)
     await dispatch('resetAll')
   },
   /**

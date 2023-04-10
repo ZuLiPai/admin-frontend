@@ -4,12 +4,14 @@ import {
   contentType,
   debounce,
   requestTimeout,
+  // eslint-disable-next-line no-unused-vars
   successCode,
   tokenName,
 } from '@/config'
 import store from '@/store'
 import qs from 'qs'
 import router from '@/router'
+// eslint-disable-next-line no-unused-vars
 import { isArray } from '@/utils/validate'
 import { message } from 'ant-design-vue'
 
@@ -79,30 +81,32 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (response) => {
     if (loadingInstance) loadingInstance.close()
-
-    const { data, config } = response
-    const { code, msg } = data
+    console.log(response, response.data)
+    return response
+    // const { data, config } = response
+    // const { code, msg } = data
     // 操作正常Code数组
-    const codeVerificationArray = isArray(successCode)
-      ? [...successCode]
-      : [...[successCode]]
+    // const codeVerificationArray = isArray(successCode)
+    //   ? [...successCode]
+    //   : [...[successCode]]
     // 是否操作正常
-    if (codeVerificationArray.includes(code)) {
-      return data
-    } else {
-      handleCode(code, msg)
-      return Promise.reject(
-        'vue-admin-beautiful请求异常拦截:' +
-          JSON.stringify({ url: config.url, code, msg }) || 'Error'
-      )
-    }
+    // if (codeVerificationArray.includes(code)) {
+    //   return data
+    // } else {
+    //   handleCode(code, msg)
+    //   return Promise.reject(
+    //     'vue-admin-beautiful请求异常拦截:' +
+    //       JSON.stringify({ url: config.url, code, msg }) || 'Error'
+    //   )
+    // }
   },
   (error) => {
     if (loadingInstance) loadingInstance.close()
     const { response, message } = error
+    console.log(response, message)
     if (error.response && error.response.data) {
       const { status, data } = response
-      handleCode(status, data.msg || message)
+      handleCode(status, data.detail || message)
       return Promise.reject(error)
     } else {
       let { message } = error

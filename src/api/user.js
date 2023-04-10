@@ -9,6 +9,14 @@ export async function login(data) {
   })
 }
 
+export async function loginToken(data) {
+  return request({
+    url: '/token/',
+    method: 'post',
+    data,
+  })
+}
+
 export async function socialLogin(data) {
   return request({
     url: '/socialLogin',

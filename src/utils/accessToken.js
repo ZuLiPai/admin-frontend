@@ -44,6 +44,22 @@ export function setAccessToken(accessToken) {
   }
 }
 
+export function setRefreshToken(refreshToken) {
+  if (storage) {
+    if ('localStorage' === storage) {
+      return localStorage.setItem('refreshToken', refreshToken)
+    } else if ('sessionStorage' === storage) {
+      return sessionStorage.setItem('refreshToken', refreshToken)
+    } else if ('cookie' === storage) {
+      return cookie.set('refreshToken', refreshToken)
+    } else {
+      return localStorage.setItem('refreshToken', refreshToken)
+    }
+  } else {
+    return localStorage.setItem('refreshToken', refreshToken)
+  }
+}
+
 /**
  * @author chuzhixin 1204505056@qq.com
  * @description 移除accessToken
