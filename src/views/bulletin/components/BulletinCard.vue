@@ -2,58 +2,69 @@
   <div>
     <a-card hoverable>
       <template #cover style="height: 200px">
-        <img
-          alt="example"
-          :height="200"
-          src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-        />
+        <img alt="example" :height="200" :src="imageUrl" />
       </template>
       <template #actions>
-        <up-outlined />
         <delete-outlined key="delete" @click="handleDelete(props.id)" />
-        <down-outlined />
+        <swap-outlined @click="handleShow(props.id)" />
       </template>
       <a-card-meta :title="props.title"></a-card-meta>
+      公告可见状态：{{ statusWord(props.status) }}
     </a-card>
   </div>
 </template>
 
 <script>
-  import {
-    DeleteOutlined,
-    UpOutlined,
-    DownOutlined,
-  } from '@ant-design/icons-vue'
+  import { DeleteOutlined, SwapOutlined } from '@ant-design/icons-vue'
   import { Modal } from 'ant-design-vue'
-  import { deleteBulletin } from '@/api/bulletin'
-  export default {
+  import { deleteBulletin, switchBulletin } from '@/api/bulletin'
+  import { defineComponent, onMounted, ref } from 'vue'
+  // eslint-disable-next-line no-unused-vars
+  import { getImage } from '@/api/image'
+
+  export default defineComponent({
     name: 'BulletinCard',
     components: {
       DeleteOutlined,
-      UpOutlined,
-      DownOutlined,
+      SwapOutlined,
     },
     props: {
       id: Number,
       title: String,
       content: String,
-      image: String,
+      image: Number,
+      status: Boolean,
     },
-    setup(props) {
+    setup(props, context) {
+      const imageUrl = ref()
+      onMounted(() => {
+        if (props.image) {
+          getImage(props.image).then((resp) => {
+            imageUrl.value = resp.data.url
+          })
+        }
+      })
+      const statusWord = (status) => {
+        return status === true ? '可见' : '不可见'
+      }
       const handleDelete = (id) => {
-        console.log(id)
         Modal.confirm({
           title: '确定删除此公告吗？',
           onOk: () => {
             deleteBulletin(id).then(() => {
-              document.location.reload()
+              context.emit('refresh')
             })
           },
         })
       }
-      return { props, handleDelete }
+      const handleShow = (id) => {
+        switchBulletin(id).then(() => {
+          context.emit('refresh')
+        })
+      }
+      return { props, imageUrl, handleDelete, handleShow, statusWord }
     },
-  }
+  })
 </script>
 
 <style scoped>

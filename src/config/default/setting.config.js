@@ -12,6 +12,7 @@ const setting = {
   lintOnSave: true,
   //进行编译的依赖
   transpileDependencies: ['vue-echarts', 'resize-detector'],
+  endpointURL: 'http://127.0.0.1:8000/images/upload/',
   //默认的接口地址 如果是开发环境和生产环境走vab-mock-server，当然你也可以选择自己配置成需要的接口地址
   baseURL: 'http://127.0.0.1:8000/',
   // baseURL:

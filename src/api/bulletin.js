@@ -21,9 +21,16 @@ export function createBulletin(data) {
     data: {
       title: data.title,
       content: data.content || '',
-      show_status: false,
+      show_status: data.show_status || true,
       order: data.order || 1,
-      image: null,
+      image: data.image,
     },
+  })
+}
+
+export function switchBulletin(id) {
+  return request({
+    url: `bulletins/${id}/show`,
+    method: 'get',
   })
 }

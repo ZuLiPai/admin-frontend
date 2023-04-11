@@ -21,15 +21,14 @@
         <a-upload-dragger
           v-model:fileList="fileList"
           name="file"
-          :multiple="true"
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+          :multiple="false"
+          :action="endpointURL"
           @change="handleChange"
-          @drop="handleDrop"
         >
           <p class="ant-upload-drag-icon">
             <inbox-outlined></inbox-outlined>
           </p>
-          <p class="ant-upload-text">点击此处或把图片拖到这里上传公告</p>
+          <p class="ant-upload-text">点击此处上传公告</p>
         </a-upload-dragger>
 
         <a-input
@@ -52,6 +51,8 @@
             :title="bulletin.title"
             :content="bulletin.content"
             :image="bulletin.image"
+            :status="bulletin.show_status"
+            @refresh="refreshBulletins"
           />
         </a-col>
         <a-col :span="24">
@@ -68,6 +69,7 @@
   import BulletinCard from '@/views/bulletin/components/BulletinCard.vue'
   import { createBulletin, getBulletins } from '@/api/bulletin'
   import { message } from 'ant-design-vue'
+  import { setting } from '@/config/default'
   export default defineComponent({
     name: 'index',
     components: {
@@ -75,23 +77,31 @@
       InboxOutlined,
     },
     setup() {
+      const endpointURL = setting.endpointURL
+
       const visible = ref(false)
       const loading = ref(false)
       const confirmLoading = ref(false)
-      const newTitle = ref()
+
       const bulletins = ref()
       const count = ref()
 
+      const newTitle = ref()
+      const fileList = ref([])
+
       onMounted(() => {
+        refreshBulletins()
+      })
+      const showModal = () => {
+        visible.value = !visible.value
+      }
+      const refreshBulletins = () => {
         loading.value = true
         getBulletins().then((resp) => {
           bulletins.value = resp.data.results
           count.value = resp.data.count
           loading.value = false
         })
-      })
-      const showModal = () => {
-        visible.value = !visible.value
       }
       const handleOk = () => {
         if (newTitle.value) {
@@ -100,30 +110,43 @@
           const data = {
             title: newTitle.value,
             content: newTitle.value,
+            image: fileList.value[0].response.image_id,
           }
           createBulletin(data).then(() => {
             confirmLoading.value = false
-            loading.value = true
             newTitle.value = ''
-            getBulletins().then((resp) => {
-              bulletins.value = resp.data.results
-              count.value = resp.data.count
-              loading.value = false
-            })
+            refreshBulletins()
           })
         } else {
           message.error('标题不能为空')
         }
       }
+
+      const handleChange = (info) => {
+        const status = info.file.status
+        if (status !== 'uploading') {
+          console.log(info.file, info.fileList)
+        }
+        if (status === 'done') {
+          message.success(`${info.file.name} 文件上传成功.`)
+        } else if (status === 'error') {
+          message.error(`${info.file.name} 文件上传失败.`)
+        }
+      }
+
       return {
+        endpointURL,
         newTitle,
         count,
         visible,
         loading,
         confirmLoading,
         bulletins,
+        fileList,
         showModal,
         handleOk,
+        handleChange,
+        refreshBulletins,
       }
     },
   })
