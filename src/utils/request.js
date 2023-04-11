@@ -23,18 +23,21 @@ let loadingInstance
  * @param {*} msg
  */
 const handleCode = (code, msg) => {
-  switch (code) {
-    case 401:
-      message.error(msg || '登录失效')
-      store.dispatch('user/resetAll').catch(() => {})
-      break
-    case 403:
-      // TODO: 尝试使用refreshToken
-      router.push({ path: '/401' }).catch(() => {})
-      break
-    default:
-      message.error(msg || `后端接口${code}异常`)
-      break
+  if (code === 401) {
+    message.error(msg || '登录失效')
+    store.dispatch('user/resetAll').catch(() => {})
+  } else if (code === 403) {
+    // TODO: 尝试使用refreshToken
+    router.push({ path: '/login' }).catch(() => {})
+    // const data = {
+    //   refresh: store.getters['user/refreshToken'],
+    // }
+    // refreshToken(data).catch(() => {
+    //   message.error('Token错误，请重新登录')
+    //   router.push({ path: '/login' })
+    // })
+  } else {
+    message.error(msg || `后端接口${code}异常`)
   }
 }
 

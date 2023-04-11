@@ -2,7 +2,7 @@
   <div>
     <a-card hoverable>
       <template #cover style="height: 200px">
-        <img alt="example" :height="200" :src="imageUrl" />
+        <img alt="example" :height="200" :src="imageUrl" id="img" />
       </template>
       <template #actions>
         <delete-outlined key="delete" @click="handleDelete(props.id)" />
@@ -19,8 +19,9 @@
   import { Modal } from 'ant-design-vue'
   import { deleteBulletin, switchBulletin } from '@/api/bulletin'
   import { defineComponent, onMounted, ref } from 'vue'
-  // eslint-disable-next-line no-unused-vars
   import { getImage } from '@/api/image'
+  // eslint-disable-next-line no-unused-vars
+  import { decode } from 'blurhash'
 
   export default defineComponent({
     name: 'BulletinCard',
@@ -40,6 +41,15 @@
       onMounted(() => {
         if (props.image) {
           getImage(props.image).then((resp) => {
+            // TODO: lazy-load image
+            // const pixels = decode(resp.data.hash, 32, 32)
+            // const canvas = document.createElement('canvas')
+            // const ctx = canvas.getContext('2d')
+            // const imageData = ctx.createImageData(32, 32)
+            // imageData.data.set(pixels)
+            // ctx.putImageData(imageData, 0, 0)
+            // document.body.append(canvas)
+
             imageUrl.value = resp.data.url
           })
         }

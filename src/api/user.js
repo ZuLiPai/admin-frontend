@@ -11,7 +11,16 @@ export async function login(data) {
 
 export async function loginToken(data) {
   return request({
-    url: '/token/',
+    url: '/auth/token/',
+    method: 'post',
+    data,
+  })
+}
+
+export async function refreshToken(data) {
+  console.log(data)
+  return request({
+    url: '/auth/token/refresh/',
     method: 'post',
     data,
   })

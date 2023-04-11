@@ -146,7 +146,7 @@ const actions = {
    */
   async resetAll({ dispatch }) {
     await dispatch('setAccessToken', '')
-    await dispatch('setRefreshToken', '')
+    // await dispatch('setRefreshToken', '')
     await dispatch('acl/setFull', false, { root: true })
     await dispatch('acl/setRole', [], { root: true })
     await dispatch('acl/setAbility', [], { root: true })
