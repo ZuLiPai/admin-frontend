@@ -110,13 +110,10 @@ const actions = {
    */
   // eslint-disable-next-line no-unused-vars
   async getUserInfo({ commit, dispatch, state }) {
-    // const { data } = await getUserInfo(state.accessToken)
-    const data = {
-      username: 'admin1',
-      roles: ['admin'],
-      ability: ['READ', 'WRITE', 'DELETE'],
-      avatar: 'https://i.gtimg.cn/club/item/face/img/8/15918_100.gif',
-    }
+    const { data } = await getUserInfo(state.accessToken)
+    data.roles = ['admin']
+    data.ability = ['READ', 'WRITE', 'DELETE']
+    data.avatar = 'https://i.gtimg.cn/club/item/face/img/8/15918_100.gif'
     if (!data) {
       message.error(`验证失败，请重新登录...`)
       return false
@@ -149,6 +146,7 @@ const actions = {
    */
   async resetAll({ dispatch }) {
     await dispatch('setAccessToken', '')
+    await dispatch('setRefreshToken', '')
     await dispatch('acl/setFull', false, { root: true })
     await dispatch('acl/setRole', [], { root: true })
     await dispatch('acl/setAbility', [], { root: true })
@@ -160,6 +158,9 @@ const actions = {
    */
   setAccessToken({ commit }, accessToken) {
     commit('setAccessToken', accessToken)
+  },
+  setRefreshToken({ commit }, refreshToken) {
+    commit('setRefreshToken', refreshToken)
   },
 }
 export default { state, getters, mutations, actions }

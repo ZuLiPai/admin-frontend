@@ -10,10 +10,10 @@
       </template>
       <template #actions>
         <up-outlined />
-        <delete-outlined key="delete" />
+        <delete-outlined key="delete" @click="handleDelete(props.id)" />
         <down-outlined />
       </template>
-      <a-card-meta title="公告标题"></a-card-meta>
+      <a-card-meta :title="props.title"></a-card-meta>
     </a-card>
   </div>
 </template>
@@ -24,12 +24,34 @@
     UpOutlined,
     DownOutlined,
   } from '@ant-design/icons-vue'
+  import { Modal } from 'ant-design-vue'
+  import { deleteBulletin } from '@/api/bulletin'
   export default {
     name: 'BulletinCard',
     components: {
       DeleteOutlined,
       UpOutlined,
       DownOutlined,
+    },
+    props: {
+      id: Number,
+      title: String,
+      content: String,
+      image: String,
+    },
+    setup(props) {
+      const handleDelete = (id) => {
+        console.log(id)
+        Modal.confirm({
+          title: '确定删除此公告吗？',
+          onOk: () => {
+            deleteBulletin(id).then(() => {
+              document.location.reload()
+            })
+          },
+        })
+      }
+      return { props, handleDelete }
     },
   }
 </script>

@@ -6,7 +6,6 @@ import {
   requestTimeout,
   // eslint-disable-next-line no-unused-vars
   successCode,
-  tokenName,
 } from '@/config'
 import store from '@/store'
 import qs from 'qs'
@@ -30,6 +29,7 @@ const handleCode = (code, msg) => {
       store.dispatch('user/resetAll').catch(() => {})
       break
     case 403:
+      // TODO: 尝试使用refreshToken
       router.push({ path: '/401' }).catch(() => {})
       break
     default:
@@ -56,8 +56,11 @@ const instance = axios.create({
  */
 instance.interceptors.request.use(
   (config) => {
-    if (store.getters['user/accessToken'])
-      config.headers[tokenName] = store.getters['user/accessToken']
+    if (store.getters['user/accessToken']) {
+      // config.headers[tokenName] = store.getters['user/accessToken']
+      config.headers['Authorization'] =
+        'Bearer ' + store.getters['user/accessToken']
+    }
     if (
       config.data &&
       config.headers['Content-Type'] ===

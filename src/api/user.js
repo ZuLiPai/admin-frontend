@@ -28,8 +28,8 @@ export async function socialLogin(data) {
 export function getUserInfo(accessToken) {
   //此处为了兼容mock.js使用data传递accessToken，如果使用mock可以走headers
   return request({
-    url: '/userInfo',
-    method: 'post',
+    url: '/admins/info/',
+    method: 'get',
     data: {
       [tokenName]: accessToken,
     },

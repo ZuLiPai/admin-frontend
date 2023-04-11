@@ -12,7 +12,12 @@
       </a-page-header>
     </div>
     <div>
-      <a-modal v-model:visible="visible" title="上传公告" @ok="handleOk">
+      <a-modal
+        v-model:visible="visible"
+        title="上传公告"
+        @ok="handleOk"
+        :confirm-loading="confirmLoading"
+      >
         <a-upload-dragger
           v-model:fileList="fileList"
           name="file"
@@ -27,28 +32,30 @@
           <p class="ant-upload-text">点击此处或把图片拖到这里上传公告</p>
         </a-upload-dragger>
 
-        <a-input placeholder="公告标题" style="margin-top: 10px" />
+        <a-input
+          placeholder="公告标题"
+          style="margin-top: 10px"
+          v-model:value="newTitle"
+        />
       </a-modal>
     </div>
     <div class="bulletin-card">
-      <a-row>
-        <a-col :span="24">
-          <BulletinCard />
+      <a-spin v-if="loading" />
+      <a-row v-if="!loading">
+        <a-col
+          :span="24"
+          v-for="bulletin in bulletins"
+          v-bind:key="bulletin.id"
+        >
+          <BulletinCard
+            :id="bulletin.id"
+            :title="bulletin.title"
+            :content="bulletin.content"
+            :image="bulletin.image"
+          />
         </a-col>
         <a-col :span="24">
-          <BulletinCard />
-        </a-col>
-        <a-col :span="24">
-          <BulletinCard />
-        </a-col>
-        <a-col :span="24">
-          <BulletinCard />
-        </a-col>
-        <a-col :span="24">
-          <BulletinCard />
-        </a-col>
-        <a-col :span="24">
-          <BulletinCard />
+          <a-empty v-if="count === 0" />
         </a-col>
       </a-row>
     </div>
@@ -56,9 +63,11 @@
 </template>
 
 <script>
-  import { defineComponent, ref } from 'vue'
+  import { defineComponent, ref, onMounted } from 'vue'
   import { InboxOutlined } from '@ant-design/icons-vue'
   import BulletinCard from '@/views/bulletin/components/BulletinCard.vue'
+  import { createBulletin, getBulletins } from '@/api/bulletin'
+  import { message } from 'ant-design-vue'
   export default defineComponent({
     name: 'index',
     components: {
@@ -67,13 +76,55 @@
     },
     setup() {
       const visible = ref(false)
+      const loading = ref(false)
+      const confirmLoading = ref(false)
+      const newTitle = ref()
+      const bulletins = ref()
+      const count = ref()
+
+      onMounted(() => {
+        loading.value = true
+        getBulletins().then((resp) => {
+          bulletins.value = resp.data.results
+          count.value = resp.data.count
+          loading.value = false
+        })
+      })
       const showModal = () => {
         visible.value = !visible.value
       }
       const handleOk = () => {
-        visible.value = false
+        if (newTitle.value) {
+          visible.value = false
+          confirmLoading.value = true
+          const data = {
+            title: newTitle.value,
+            content: newTitle.value,
+          }
+          createBulletin(data).then(() => {
+            confirmLoading.value = false
+            loading.value = true
+            newTitle.value = ''
+            getBulletins().then((resp) => {
+              bulletins.value = resp.data.results
+              count.value = resp.data.count
+              loading.value = false
+            })
+          })
+        } else {
+          message.error('标题不能为空')
+        }
       }
-      return { visible, showModal, handleOk }
+      return {
+        newTitle,
+        count,
+        visible,
+        loading,
+        confirmLoading,
+        bulletins,
+        showModal,
+        handleOk,
+      }
     },
   })
 </script>
