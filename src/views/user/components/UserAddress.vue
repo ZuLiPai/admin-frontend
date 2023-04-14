@@ -159,7 +159,6 @@
       }
       onMounted(() => {
         getAddresses(props.id).then((resp) => {
-          console.log(resp.data)
           dynamicValidateForm.domains = resp.data.results
         })
       })

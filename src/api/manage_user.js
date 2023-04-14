@@ -29,6 +29,12 @@ export async function getUser(id) {
   })
 }
 
+export async function getAvatar(id) {
+  return request({
+    url: `users/${id}/avatar/`,
+    method: 'get',
+  })
+}
 export async function updateUser(id, data) {
   return request({
     url: `users/${id}/`,
