@@ -23,8 +23,8 @@
             <a-form-item label="工单状态">
               <a-select placeholder="请选择">
                 <a-select-option value="0">全部</a-select-option>
-                <a-select-option value="1">已读</a-select-option>
-                <a-select-option value="2">未读</a-select-option>
+                <a-select-option value="1">未解决</a-select-option>
+                <a-select-option value="2">已解决</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -74,30 +74,32 @@
     </div>
 
     <div class="table-content">
-      <a-table :columns="columns" :data-source="data">
+      <a-table :columns="columns" :data-source="tickets">
         <template #headerCell="{ column }">
-          <template v-if="column.key === 'id'">
+          <template v-if="column.key === 'ticket_id'">
             <span>工单编号</span>
           </template>
         </template>
 
         <template #bodyCell="{ column, record }">
-          <template v-if="column.key === 'name'">
-            <a>
-              {{ record.name }}
-            </a>
-          </template>
-          <template v-if="column.key === 'status'">
+          <template v-if="column.key === 'ticket_status'">
             <a-badge
-              :status="record.status === '已读' ? 'success' : 'error'"
-              :text="record.status"
+              :status="record.ticket_status === true ? 'success' : 'error'"
+              :text="record.ticket_status === true ? '已解决' : '未解决'"
             />
           </template>
           <template v-else-if="column.key === 'action'">
             <span>
-              <a>查看</a>
+              <a @click="handleDetail(record.ticket_id)">查看</a>
               <a-divider type="vertical" />
-              <a>关闭工单</a>
+              <a-popconfirm
+                title="确认关闭该工单吗？"
+                ok-text="是"
+                cancel-text="否"
+                @confirm="confirm(record.ticket_id)"
+              >
+                <a>关闭工单</a>
+              </a-popconfirm>
             </span>
           </template>
         </template>
@@ -107,10 +109,12 @@
 </template>
 
 <script>
-  import { ref } from 'vue'
+  import { defineComponent, ref, onMounted } from 'vue'
+  import { message } from 'ant-design-vue'
   import { UpOutlined, DownOutlined, PlusOutlined } from '@ant-design/icons-vue'
+  import { getAllTickets, closeTicket } from '@/api/ticket'
 
-  export default {
+  export default defineComponent({
     name: 'index',
     components: {
       UpOutlined,
@@ -119,79 +123,68 @@
     },
     setup() {
       const advanced = ref(false)
+      const tickets = ref()
+      const count = ref()
+      onMounted(() => {
+        refreshTicket()
+      })
+      const refreshTicket = () => {
+        getAllTickets().then((resp) => {
+          tickets.value = resp.data.results
+          count.value = resp.data.count
+        })
+      }
+      const handleDetail = () => {}
+      const confirm = (id) => {
+        closeTicket(id).then(refreshTicket)
+        message.success('工单已关闭')
+      }
       function toggleAdvanced() {
         advanced.value = !advanced.value
       }
-      return { advanced, toggleAdvanced, data, columns, stat }
+      return {
+        advanced,
+        toggleAdvanced,
+        tickets,
+        columns,
+        stat,
+        handleDetail,
+        confirm,
+      }
     },
-  }
+  })
 
   const columns = [
     {
       name: '工单编号',
-      dataIndex: 'id',
-      key: 'id',
+      dataIndex: 'ticket_id',
+      key: 'ticket_id',
     },
     {
       title: '用户昵称',
-      dataIndex: 'username',
-      key: 'username',
+      dataIndex: 'ticket_username',
+      key: 'ticket_username',
     },
     {
-      title: '租赁产品',
-      dataIndex: 'item',
-      key: 'item',
-    },
-    {
-      title: '内容',
-      dataIndex: 'content',
-      key: 'content',
+      title: '工单标题',
+      dataIndex: 'ticket_title',
+      key: 'ticket_title',
     },
     {
       title: '工单状态',
-      key: 'status',
-      dataIndex: 'status',
+      key: 'ticket_status',
+      dataIndex: 'ticket_status',
     },
     {
       title: '工单时间',
-      key: 'datetime',
-      dataIndex: 'datetime',
+      key: 'ticket_datetime',
+      dataIndex: 'ticket_time',
     },
     {
       title: '操作',
       key: 'action',
     },
   ]
-  const data = [
-    {
-      key: '1',
-      id: 1,
-      username: 'John Brown',
-      item: 'Sony a7m3',
-      content: 'rnm退钱',
-      status: '已读',
-      datetime: '2023-03-03 11:01',
-    },
-    {
-      key: '2',
-      id: 2,
-      username: 'Jim Green',
-      item: 'Canon 5D Mark IV',
-      content: '没付款能发货吗',
-      status: '未读',
-      datetime: '2023-03-02 21:34',
-    },
-    {
-      key: '3',
-      id: 3,
-      username: 'Joe Black',
-      item: 'DJI Pocket',
-      content: '发票怎么开',
-      status: '未读',
-      datetime: '2023-02-28 09:31',
-    },
-  ]
-
   const stat = 'processing'
 </script>
 
