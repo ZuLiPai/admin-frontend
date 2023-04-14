@@ -2,7 +2,13 @@
   <div>
     <a-card hoverable>
       <template #cover style="height: 200px">
-        <img alt="example" :height="200" :src="imageUrl" id="img" />
+        <img
+          alt="example"
+          :height="200"
+          :src="imageUrl"
+          id="img"
+          style="object-fit: contain"
+        />
       </template>
       <template #actions>
         <delete-outlined key="delete" @click="handleDelete(props.id)" />
