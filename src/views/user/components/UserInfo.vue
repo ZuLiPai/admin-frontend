@@ -1,30 +1,30 @@
 <template>
   <a-row justify="center">
-    <avater></avater>
+    <Avatar :id="id"></Avatar>
   </a-row>
   <a-row justify="center" style="margin-top: 30px">
-    <a-col :span="3"></a-col>
-    <a-col :span="6">
-      <UserDetail></UserDetail>
-    </a-col>
-    <a-col :span="3"></a-col>
     <a-col :span="12">
-      <UserAddress></UserAddress>
+      <UserDetail :id="id"></UserDetail>
+    </a-col>
+    <a-col :span="12">
+      <UserAddress :id="id"></UserAddress>
     </a-col>
   </a-row>
 </template>
 
 <script>
-  import avater from '@/views/user/components/Avater.vue'
+  import Avatar from '@/views/user/components/Avatar.vue'
   import UserDetail from '@/views/user/components/UserDetail.vue'
   import UserAddress from '@/views/user/components/UserAddress.vue'
-  export default {
+  import { defineComponent } from 'vue'
+  export default defineComponent({
     name: 'UserInfo',
-    components: { avater, UserDetail, UserAddress },
+    components: { Avatar, UserDetail, UserAddress },
+    props: { id: Number },
     setup() {
-      return { avater, UserDetail, UserAddress }
+      return {}
     },
-  }
+  })
 </script>
 
 <style scoped></style>

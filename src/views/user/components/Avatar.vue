@@ -7,6 +7,7 @@
   import { UserOutlined } from '@ant-design/icons-vue'
   import { defineComponent } from 'vue'
   export default defineComponent({
+    name: 'Avatar',
     components: {
       UserOutlined,
     },
