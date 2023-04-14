@@ -7,20 +7,31 @@
   >
     <a-form-item
       v-for="(domain, index) in dynamicValidateForm.domains"
-      :key="domain.key"
+      :key="domain.id"
       v-bind="index === 0 ? formItemLayout : {}"
       :label="index === 0 ? '地址' : ''"
-      :name="['domains', index, 'value']"
-      :rules="{
-        required: true,
-        message: '地址不能为空',
-        trigger: 'change',
-      }"
     >
+      <!--      :name="['address', 'name', 'phone']"-->
+      <!--      :rules="{-->
+      <!--        required: true,-->
+      <!--        message: '地址不能为空',-->
+      <!--        trigger: 'change',-->
+      <!--      }"-->
+
       <a-input
-        v-model:value="domain.value"
+        v-model:value="domain.name"
+        placeholder="请输入姓名"
+        style="width: 80%; margin-top: 8px"
+      />
+      <a-input
+        v-model:value="domain.phone"
+        placeholder="请输入手机号"
+        style="width: 80%; margin-top: 8px"
+      />
+      <a-input
+        v-model:value="domain.address"
         placeholder="请输入地址"
-        style="width: 60%; margin-right: 8px"
+        style="width: 80%; margin-top: 8px; margin-right: 8px"
       />
       <MinusCircleOutlined
         v-if="dynamicValidateForm.domains.length > 1"
@@ -30,7 +41,7 @@
       />
     </a-form-item>
     <a-form-item v-bind="formItemLayoutWithOutLabel">
-      <a-button type="dashed" style="width: 60%" @click="addDomain">
+      <a-button type="dashed" style="width: 80%" @click="addDomain">
         <PlusOutlined />
         添加地址
       </a-button>
@@ -45,13 +56,23 @@
 </template>
 <script>
   import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons-vue'
-  import { defineComponent, reactive, ref } from 'vue'
+  import { defineComponent, onMounted, reactive, ref } from 'vue'
+  import {
+    createAddress,
+    deleteAddress,
+    getAddresses,
+    updateAddress,
+  } from '@/api/manage_user'
+  import { message } from 'ant-design-vue'
   export default defineComponent({
+    props: {
+      id: Number,
+    },
     components: {
       MinusCircleOutlined,
       PlusOutlined,
     },
-    setup() {
+    setup(props) {
       const formRef = ref()
       const formItemLayout = {
         labelCol: {
@@ -90,7 +111,21 @@
         formRef.value
           .validate()
           .then(() => {
-            console.log('values', dynamicValidateForm.domains)
+            // console.log('values', dynamicValidateForm.domains)
+            dynamicValidateForm.domains.forEach((item) => {
+              if (item.id) {
+                // update
+                updateAddress(props.id, item.id, item).then(() => {
+                  // console.log(resp.data)
+                })
+              } else {
+                // create
+                createAddress(props.id, item).then(() => {
+                  // console.log(resp.data)
+                })
+              }
+            })
+            message.success('地址保存成功')
           })
           .catch((error) => {
             console.log('error', error)
@@ -100,9 +135,20 @@
         formRef.value.resetFields()
       }
       const removeDomain = (item) => {
-        let index = dynamicValidateForm.domains.indexOf(item)
-        if (index !== -1) {
-          dynamicValidateForm.domains.splice(index, 1)
+        if (item.id) {
+          deleteAddress(props.id, item.id).then(() => {
+            // console.log(resp.data)
+            message.warn('地址删除成功')
+            let index = dynamicValidateForm.domains.indexOf(item)
+            if (index !== -1) {
+              dynamicValidateForm.domains.splice(index, 1)
+            }
+          })
+        } else {
+          let index = dynamicValidateForm.domains.indexOf(item)
+          if (index !== -1) {
+            dynamicValidateForm.domains.splice(index, 1)
+          }
         }
       }
       const addDomain = () => {
@@ -111,6 +157,11 @@
           key: Date.now(),
         })
       }
+      onMounted(() => {
+        getAddresses(props.id).then((resp) => {
+          dynamicValidateForm.domains = resp.data.results
+        })
+      })
       return {
         formRef,
         formItemLayout,

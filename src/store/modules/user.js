@@ -2,8 +2,7 @@
  * @author chuzhixin 1204505056@qq.com
  * @description 登录、获取用户信息、退出登录、清除accessToken逻辑，不建议修改
  */
-// eslint-disable-next-line no-unused-vars
-import { getUserInfo, loginToken, logout } from '@/api/user'
+import { getUserInfo, loginToken } from '@/api/user'
 import {
   getAccessToken,
   removeAccessToken,
