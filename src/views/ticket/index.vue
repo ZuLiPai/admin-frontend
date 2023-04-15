@@ -14,12 +14,17 @@
     <div class="table-search">
       <a-form layout="inline">
         <a-row :gutter="48">
-          <a-col :md="8" :sm="24">
+          <a-col :md="4" :sm="24">
             <a-form-item label="工单编号">
               <a-input placeholder="" />
             </a-form-item>
           </a-col>
-          <a-col :md="8" :sm="24">
+          <a-col :md="6" :sm="24">
+            <a-form-item label="用户昵称">
+              <a-input style="width: 100%" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="4" :sm="24">
             <a-form-item label="工单状态">
               <a-select placeholder="请选择">
                 <a-select-option value="0">全部</a-select-option>
@@ -28,46 +33,14 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :md="8" :sm="24">
-            <a-form-item label="用户昵称">
-              <a-input style="width: 100%" />
+          <a-col :md="6" :sm="24">
+            <a-form-item label="工单日期">
+              <a-date-picker style="width: 100%" placeholder="请选择工单日期" />
             </a-form-item>
           </a-col>
-          <template v-if="advanced">
-            <a-col :md="8" :sm="24">
-              <a-form-item label="工单日期">
-                <a-date-picker
-                  style="width: 100%"
-                  placeholder="请输入工单日期"
-                />
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="租赁产品">
-                <a-input style="width: 100%" />
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="工单内容">
-                <a-input style="width: 100%" />
-              </a-form-item>
-            </a-col>
-          </template>
-          <a-col :md="(!advanced && 8) || 24" :sm="24">
-            <span
-              class="table-page-search-submitButtons"
-              :style="
-                (advanced && { float: 'right', overflow: 'hidden' }) || {}
-              "
-            >
-              <a-button type="primary">查询</a-button>
-              <a-button style="margin-left: 12px">重置</a-button>
-              <a @click="toggleAdvanced" style="margin-left: 12px">
-                {{ advanced ? '收起' : '展开' }}
-                <up-outlined v-if="advanced"></up-outlined>
-                <down-outlined v-if="!advanced"></down-outlined>
-              </a>
-            </span>
+          <a-col :md="4" :sm="24">
+            <a-button type="primary">查询</a-button>
+            <a-button style="margin-left: 12px">重置</a-button>
           </a-col>
         </a-row>
       </a-form>
@@ -97,8 +70,10 @@
                 ok-text="是"
                 cancel-text="否"
                 @confirm="confirm(record.ticket_id)"
+                :disabled="record.ticket_status === true"
               >
-                <a>关闭工单</a>
+                <a v-if="record.ticket_status === false">关闭工单</a>
+                <a disabled="" v-else>工单已关闭</a>
               </a-popconfirm>
             </span>
           </template>
@@ -111,18 +86,15 @@
 <script>
   import { defineComponent, ref, onMounted } from 'vue'
   import { message } from 'ant-design-vue'
-  import { UpOutlined, DownOutlined, PlusOutlined } from '@ant-design/icons-vue'
+  import { PlusOutlined } from '@ant-design/icons-vue'
   import { getAllTickets, closeTicket } from '@/api/ticket'
 
   export default defineComponent({
     name: 'index',
     components: {
-      UpOutlined,
-      DownOutlined,
       PlusOutlined,
     },
     setup() {
-      const advanced = ref(false)
       const tickets = ref()
       const count = ref()
       onMounted(() => {
@@ -130,8 +102,8 @@
       })
       const refreshTicket = () => {
         getAllTickets().then((resp) => {
-          tickets.value = resp.data.results
-          count.value = resp.data.count
+          tickets.value = resp.data
+          count.value = resp.data.length
         })
       }
       const handleDetail = () => {}
@@ -139,12 +111,7 @@
         closeTicket(id).then(refreshTicket)
         message.success('工单已关闭')
       }
-      function toggleAdvanced() {
-        advanced.value = !advanced.value
-      }
       return {
-        advanced,
-        toggleAdvanced,
         tickets,
         columns,
         stat,

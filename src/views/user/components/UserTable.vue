@@ -49,7 +49,6 @@
               <a @click="switchUserState(record.id, record.is_active)">
                 {{ userAction(record.is_active) }}用户
               </a>
-              <a-divider type="vertical" />
             </span>
           </template>
         </template>

@@ -99,7 +99,7 @@
         loading.value = true
         getBulletins().then((resp) => {
           bulletins.value = resp.data
-          count.value = resp.data.count
+          count.value = resp.data.length
           loading.value = false
         })
       }
