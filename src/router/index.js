@@ -121,11 +121,21 @@ export const asyncRoutes = [
         },
       },
       {
-        path: '1',
+        path: ':id',
         name: 'ItemDetail',
         component: () => import('@/views/item/ItemDetail.vue'),
+        hidden: true,
         meta: {
           title: '商品详情',
+        },
+      },
+      {
+        path: 'add',
+        name: 'AddItem',
+        component: () => import('@/views/item/AddItem.vue'),
+        hidden: true,
+        meta: {
+          title: '添加商品',
         },
       },
       {

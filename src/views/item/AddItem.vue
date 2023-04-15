@@ -1,6 +1,10 @@
 <template>
   <div>
-    <a-page-header title="商品详情管理" @back="this.$router.back()" />
+    <a-row :gutter="16">
+      <a-col :span="12">
+        <h1>添加商品</h1>
+      </a-col>
+    </a-row>
     <a-row :gutter="16">
       <a-col :span="8">
         <a-input
@@ -71,7 +75,7 @@
     <div>
       <a-row :gutter="16">
         <a-col :span="12" style="text-align: center">
-          <ItemSpecDetail ref="specDetail"></ItemSpecDetail>
+          <ItemSpecAdd ref="specRef" />
         </a-col>
         <a-col :span="12">
           <h4>介绍图片与样片</h4>
@@ -108,7 +112,7 @@
         <a-button
           size="large"
           type="primary"
-          :loading="saveLoading"
+          :loading="createLoading"
           style="width: 100%"
           @click="saveItem"
         >
@@ -122,25 +126,21 @@
 <script>
   import { UploadOutlined } from '@ant-design/icons-vue'
   import { onMounted, ref } from 'vue'
-  import { useRoute } from 'vue-router'
-  import { getItem, updateItem } from '@/api/item'
-  import { addTags, getTagByItem, getTags } from '@/api/tags'
+  import { addTags, getTags } from '@/api/tags'
+  import ItemSpecAdd from '@/views/item/components/ItemSpecAdd.vue'
+  import { createItem } from '@/api/item'
   import { message } from 'ant-design-vue'
   import router from '@/router'
-  import ItemSpecDetail from '@/views/item/components/ItemSpecDetail.vue'
 
-  const item_id = ref('')
   const itemName = ref('')
   const itemType = ref('')
   const itemPrice = ref()
   const itemDeposit = ref()
   const itemStock = ref()
   const itemPromoStatus = ref(false)
-  const itemStatus = ref(false)
-  const itemSpec = ref([])
-  const specDetail = ref(null)
+  const itemStatus = ref(true)
 
-  const tagValue = ref([])
+  const tagValue = ref()
   const tagOptions = ref([])
   const tagHandleChange = () => {}
 
@@ -148,7 +148,8 @@
   const previewImage = ref('')
   const previewTitle = ref('')
 
-  const saveLoading = ref(false)
+  const specRef = ref(null)
+  const createLoading = ref(false)
 
   const types = ref([
     {
@@ -230,7 +231,8 @@
   }
 
   const saveItem = () => {
-    saveLoading.value = true
+    createLoading.value = true
+    const spec = specRef.value.dataSource
     const data = {
       name: itemName.value,
       type: itemType.value,
@@ -239,50 +241,39 @@
       stock: itemStock.value,
       promo_status: itemPromoStatus.value,
       show_status: itemStatus.value,
-      specs: specDetail.value.dataSource,
+      specs: spec,
     }
-    updateItem(item_id.value, data)
+    createItem(data)
       .then((resp) => {
-        saveLoading.value = false
+        createLoading.value = false
         const item_id = resp.data.id
         tagValue.value.forEach((tag) => {
-          // TODO: 商品标签可以加不可以删，直接在后端不可重复就可以了
           const tag_data = { item: item_id, tag: tag }
           addTags(item_id, tag_data)
         })
-        message.success('商品保存成功')
+        message.success('商品创建成功')
+        router.push({ name: 'AllItem' })
+        itemName.value = ''
+        itemType.value = ''
+        itemPrice.value = ''
+        itemDeposit.value = ''
+        itemStock.value = ''
+        itemPromoStatus.value = false
+        itemStatus.value = true
       })
       .catch(() => {
-        saveLoading.value = false
-        message.error('商品保存失败')
+        createLoading.value = false
+        message.error('商品创建失败')
       })
   }
   export default {
-    name: 'ItemDetail',
-    methods: {
-      router() {
-        return router
-      },
-    },
+    name: 'AddItem',
     components: {
-      ItemSpecDetail,
+      ItemSpecAdd,
       UploadOutlined,
     },
     setup() {
-      const route = useRoute()
       onMounted(() => {
-        item_id.value = route.params.id
-        getItem(item_id.value).then((res) => {
-          itemName.value = res.data.name
-          itemType.value = res.data.type
-          itemPrice.value = res.data.price
-          itemDeposit.value = res.data.deposit
-          itemStock.value = res.data.stock
-          itemPromoStatus.value = res.data.promo_status
-          itemStatus.value = res.data.show_status
-          itemSpec.value = res.data.specs
-          specDetail.value.refreshSpec(itemSpec.value)
-        })
         getTags().then((resp) => {
           resp.data.forEach((item) => {
             tagOptions.value.push({
@@ -291,13 +282,9 @@
             })
           })
         })
-        getTagByItem(item_id.value).then((resp) => {
-          resp.data.forEach((item) => {
-            tagValue.value.push(item.tag)
-          })
-        })
       })
       return {
+        specRef,
         types,
         itemName,
         itemType,
@@ -306,8 +293,6 @@
         itemStock,
         itemPromoStatus,
         itemStatus,
-        itemSpec,
-        specDetail,
 
         tagValue,
         tagOptions,
@@ -321,7 +306,7 @@
         handlePreview,
 
         saveItem,
-        saveLoading,
+        createLoading,
       }
     },
   }
