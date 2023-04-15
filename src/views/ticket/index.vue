@@ -5,7 +5,11 @@
         <h1>工单管理</h1>
       </a-col>
       <a-col :span="12">
-        <a-button type="primary" style="float: right">
+        <a-button
+          type="primary"
+          style="float: right"
+          @click="this.$router.push({ name: 'CreateTicket' })"
+        >
           <PlusOutlined />
           创建工单
         </a-button>
@@ -63,7 +67,16 @@
           </template>
           <template v-else-if="column.key === 'action'">
             <span>
-              <a @click="handleDetail(record.ticket_id)">查看</a>
+              <a
+                @click="
+                  this.$router.push({
+                    name: 'TicketDetail',
+                    params: { ticketId: record.ticket_id },
+                  })
+                "
+              >
+                查看
+              </a>
               <a-divider type="vertical" />
               <a-popconfirm
                 title="确认关闭该工单吗？"
@@ -106,11 +119,17 @@
           count.value = resp.data.length
         })
       }
-      const handleDetail = () => {}
+      const handleDetail = (ticketId) => {
+        this.$router.push({
+          name: 'TicketDetail',
+          param: { ticketId: ticketId },
+        })
+      }
       const confirm = (id) => {
         closeTicket(id).then(refreshTicket)
         message.success('工单已关闭')
       }
+
       return {
         tickets,
         columns,

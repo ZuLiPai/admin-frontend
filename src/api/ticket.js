@@ -20,3 +20,11 @@ export async function closeTicket(id) {
     method: 'patch',
   })
 }
+
+export async function createTicketMessage(id, data) {
+  return request({
+    url: `tickets/${id}/`,
+    method: 'post',
+    data: data,
+  })
+}

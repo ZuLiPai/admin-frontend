@@ -188,7 +188,7 @@ export const asyncRoutes = [
         },
       },
       {
-        path: '1',
+        path: 'detail/:ticketId',
         name: 'TicketDetail',
         component: () => import('@/views/ticket/TicketDetail'),
         meta: {
@@ -197,7 +197,7 @@ export const asyncRoutes = [
       },
       {
         path: 'create',
-        name: ' CreateTicket',
+        name: 'CreateTicket',
         component: () => import('@/views/ticket/CreateTicket'),
         meta: { title: '创建工单' },
       },
