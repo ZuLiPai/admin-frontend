@@ -28,6 +28,8 @@ const handleCode = (code, msg) => {
     store.dispatch('user/resetAll').catch(() => {})
   } else if (code === 403) {
     // TODO: 尝试使用refreshToken
+    message.error('权限不足或登录状态过期，请重新登录')
+    store.dispatch('user/resetAll').catch(() => {})
     router.push({ path: '/login' }).catch(() => {})
     // const data = {
     //   refresh: store.getters['user/refreshToken'],

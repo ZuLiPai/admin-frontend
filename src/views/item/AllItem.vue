@@ -5,7 +5,11 @@
         <h1>产品管理</h1>
       </a-col>
       <a-col :span="12">
-        <a-button type="primary" style="float: right">
+        <a-button
+          type="primary"
+          style="float: right"
+          @click="this.$router.push({ name: 'AddItem' })"
+        >
           <PlusOutlined />
           添加产品
         </a-button>

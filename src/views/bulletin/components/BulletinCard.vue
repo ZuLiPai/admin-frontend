@@ -3,7 +3,7 @@
     <a-card hoverable>
       <template #cover style="height: 200px">
         <img
-          alt="example"
+          alt="bulletin"
           :height="200"
           :src="imageUrl"
           id="img"

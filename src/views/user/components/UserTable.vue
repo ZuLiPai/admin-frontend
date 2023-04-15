@@ -74,6 +74,7 @@
   import UserInfo from '@/views/user/components/UserInfo.vue'
   import { getUsers, switchUser } from '@/api/manage_user'
   import { message } from 'ant-design-vue'
+  // TODO: 分页
   const userAction = (is_active) => {
     if (is_active) {
       return '禁用'

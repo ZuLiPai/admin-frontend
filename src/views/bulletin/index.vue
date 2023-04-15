@@ -28,7 +28,7 @@
           <p class="ant-upload-drag-icon">
             <inbox-outlined></inbox-outlined>
           </p>
-          <p class="ant-upload-text">点击此处上传公告</p>
+          <p class="ant-upload-text">点击此处上传公告图片</p>
         </a-upload-dragger>
 
         <a-input

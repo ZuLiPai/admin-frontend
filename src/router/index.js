@@ -129,6 +129,15 @@ export const asyncRoutes = [
         },
       },
       {
+        path: 'add',
+        name: 'AddItem',
+        component: () => import('@/views/item/AddItem.vue'),
+        hidden: true,
+        meta: {
+          title: '添加商品',
+        },
+      },
+      {
         path: 'comment',
         name: 'Comment',
         component: () => import('@/views/item/AllComment.vue'),
