@@ -20,6 +20,9 @@
         <template v-if="column.key === 'name'">
           <span>产品名称</span>
         </template>
+        <template v-else-if="column.key === 'id'">
+          <span>产品编号</span>
+        </template>
       </template>
 
       <template #bodyCell="{ column, record }">
@@ -30,18 +33,8 @@
         </template>
         <template v-else-if="column.key === 'tags'">
           <span>
-            <a-tag
-              v-for="tag in record.tags"
-              :key="tag"
-              :color="
-                tag === '佳能'
-                  ? 'volcano'
-                  : tag.length > 2
-                  ? 'geekblue'
-                  : 'green'
-              "
-            >
-              {{ tag.toUpperCase() }}
+            <a-tag v-for="tag in record.tags" :key="tag.id" color="blue">
+              {{ tag.name }}
             </a-tag>
           </span>
         </template>
@@ -76,10 +69,17 @@
 </template>
 
 <script>
-  import { defineComponent } from 'vue'
+  import { defineComponent, onMounted, ref } from 'vue'
   import { DownOutlined, PlusOutlined } from '@ant-design/icons-vue'
+  import { getItems } from '@/api/item'
+  import { getTagByItem } from '@/api/tags'
 
   const columns = [
+    {
+      name: '产品编号',
+      dataIndex: 'id',
+      key: 'id',
+    },
     {
       name: '产品名称',
       dataIndex: 'name',
@@ -106,8 +106,8 @@
     },
     {
       title: '产品类型',
-      dataIndex: 'category',
-      key: 'category',
+      dataIndex: 'type',
+      key: 'type',
       filters: [
         {
           text: '相机',
@@ -122,13 +122,13 @@
           value: '无人机',
         },
       ],
-      onFilter: (value, record) => record.category.indexOf(value) === 0,
+      onFilter: (value, record) => record.type.indexOf(value) === 0,
     },
     {
       title: '基础租金',
-      dataIndex: 'fee',
-      key: 'fee',
-      sorter: (a, b) => a.fee - b.fee,
+      dataIndex: 'price',
+      key: 'price',
+      sorter: (a, b) => a.price - b.price,
     },
     {
       title: '标签',
@@ -140,78 +140,7 @@
       key: 'action',
     },
   ]
-  const data = [
-    {
-      key: '1',
-      name: '索尼 Sony a7m4',
-      category: '相机',
-      fee: 300,
-      tags: ['索尼', '微单', '全画幅'],
-    },
-    {
-      key: '2',
-      name: '索尼 Sony a7r3',
-      category: '相机',
-      fee: 330,
-      tags: ['索尼', '微单', '全画幅'],
-    },
-    {
-      key: '3',
-      name: '索尼 Sony a7c',
-      category: '相机',
-      fee: 280,
-      tags: ['索尼', '微单', '全画幅'],
-    },
-    {
-      key: '4',
-      name: '佳能 Canon 5D Mark IV',
-      category: '相机',
-      fee: 280,
-      tags: ['佳能', '单反', '全画幅'],
-    },
-    {
-      key: '5',
-      name: '佳能 Canon 6D Mark II',
-      category: '相机',
-      fee: 300,
-      tags: ['佳能', '单反', '全画幅'],
-    },
-    {
-      key: '6',
-      name: '佳能 Canon 90D',
-      category: '相机',
-      fee: 210,
-      tags: ['佳能', '单反', 'APS-C画幅'],
-    },
-    {
-      key: '7',
-      name: '索尼 Sony 24-70mm f2.8',
-      category: '镜头',
-      fee: 180,
-      tags: ['索尼', '变焦'],
-    },
-    {
-      key: '8',
-      name: '适马 Sigma 70-200mm f2.8',
-      category: '镜头',
-      fee: 150,
-      tags: ['适马', '长焦'],
-    },
-    {
-      key: '9',
-      name: '佳能 Canon 50mm f1.8',
-      category: '镜头',
-      fee: 80,
-      tags: ['佳能', '定焦', '人像'],
-    },
-    {
-      key: '10',
-      name: '大疆 DJI Phantom 4',
-      category: '无人机',
-      fee: 300,
-      tags: ['大疆', '航拍'],
-    },
-  ]
+  const data = ref([])
   export default defineComponent({
     name: 'AllItem',
     components: {
@@ -219,6 +148,24 @@
       PlusOutlined,
     },
     setup() {
+      onMounted(() => {
+        getItems().then((resp) => {
+          data.value = resp.data
+          data.value.forEach((item) => {
+            // TODO: 这太2了，应该直接在后端返回tag的
+            getTagByItem(item.id).then((resp) => {
+              const t = []
+              resp.data.forEach((tag) => {
+                t.push({
+                  id: tag.id,
+                  name: tag.tag_name,
+                })
+              })
+              item.tags = t
+            })
+          })
+        })
+      })
       return {
         data,
         columns,

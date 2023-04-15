@@ -98,7 +98,7 @@
       const refreshBulletins = () => {
         loading.value = true
         getBulletins().then((resp) => {
-          bulletins.value = resp.data.results
+          bulletins.value = resp.data
           count.value = resp.data.count
           loading.value = false
         })

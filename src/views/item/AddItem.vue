@@ -275,7 +275,7 @@
     setup() {
       onMounted(() => {
         getTags().then((resp) => {
-          resp.data.results.forEach((item) => {
+          resp.data.forEach((item) => {
             tagOptions.value.push({
               label: item.name,
               value: item.id,
