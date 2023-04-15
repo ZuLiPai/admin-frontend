@@ -27,7 +27,14 @@
 
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'name'">
-          <a>
+          <a
+            @click="
+              this.$router.push({
+                name: 'ItemDetail',
+                params: { id: record.id },
+              })
+            "
+          >
             {{ record.name }}
           </a>
         </template>
@@ -40,7 +47,16 @@
         </template>
         <template v-else-if="column.key === 'action'">
           <span>
-            <a>查看</a>
+            <a
+              @click="
+                this.$router.push({
+                  name: 'ItemDetail',
+                  params: { id: record.id },
+                })
+              "
+            >
+              查看
+            </a>
             <a-divider type="vertical" />
             <a-dropdown>
               <a class="ant-dropdown-link">
