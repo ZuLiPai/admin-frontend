@@ -28,3 +28,11 @@ export async function createTicketMessage(id, data) {
     data: data,
   })
 }
+
+export async function createTicket(data) {
+  return request({
+    url: `tickets/`,
+    method: 'post',
+    data: data,
+  })
+}

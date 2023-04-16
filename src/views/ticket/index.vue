@@ -16,19 +16,19 @@
       </a-col>
     </a-row>
     <div class="table-search">
-      <a-form layout="inline">
-        <a-row :gutter="48">
-          <a-col :md="4" :sm="24">
+      <a-form>
+        <a-row justify="space-between" gutter="24">
+          <a-col flex="5">
             <a-form-item label="工单编号">
               <a-input placeholder="" />
             </a-form-item>
           </a-col>
-          <a-col :md="6" :sm="24">
+          <a-col flex="5">
             <a-form-item label="用户昵称">
               <a-input style="width: 100%" />
             </a-form-item>
           </a-col>
-          <a-col :md="4" :sm="24">
+          <a-col flex="4">
             <a-form-item label="工单状态">
               <a-select placeholder="请选择">
                 <a-select-option value="0">全部</a-select-option>
@@ -37,12 +37,12 @@
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :md="6" :sm="24">
+          <a-col flex="6">
             <a-form-item label="工单日期">
               <a-date-picker style="width: 100%" placeholder="请选择工单日期" />
             </a-form-item>
           </a-col>
-          <a-col :md="4" :sm="24">
+          <a-col flex="6">
             <a-button type="primary">查询</a-button>
             <a-button style="margin-left: 12px">重置</a-button>
           </a-col>
