@@ -1,9 +1,10 @@
 import request from '@/utils/request'
 
-export async function getAllTickets() {
+export async function getAllTickets(params) {
   return request({
     url: `tickets/`,
     method: 'get',
+    params: params,
   })
 }
 

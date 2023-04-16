@@ -20,31 +20,44 @@
         <a-row justify="space-between" gutter="24">
           <a-col flex="5">
             <a-form-item label="工单编号">
-              <a-input placeholder="" />
+              <a-input placeholder="" v-model:value="queryItem.ticket_id" />
             </a-form-item>
           </a-col>
           <a-col flex="5">
             <a-form-item label="用户昵称">
-              <a-input style="width: 100%" />
+              <a-input
+                style="width: 100%"
+                v-model:value="queryItem.ticket_username"
+              />
             </a-form-item>
           </a-col>
           <a-col flex="4">
             <a-form-item label="工单状态">
-              <a-select placeholder="请选择">
-                <a-select-option value="0">全部</a-select-option>
-                <a-select-option value="1">未解决</a-select-option>
-                <a-select-option value="2">已解决</a-select-option>
+              <a-select
+                placeholder="请选择"
+                v-model:value="queryItem.ticket_status"
+              >
+                <a-select-option value="all">全部</a-select-option>
+                <a-select-option value="false">未解决</a-select-option>
+                <a-select-option value="true">已解决</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
           <a-col flex="6">
             <a-form-item label="工单日期">
-              <a-date-picker style="width: 100%" placeholder="请选择工单日期" />
+              <a-date-picker
+                style="width: 100%"
+                placeholder="请选择工单日期"
+                v-model:value="queryItem.tickets_time"
+                :format="dateFormat"
+              />
             </a-form-item>
           </a-col>
           <a-col flex="6">
-            <a-button type="primary">查询</a-button>
-            <a-button style="margin-left: 12px">重置</a-button>
+            <a-button type="primary" @click="submitQuery">查询</a-button>
+            <a-button style="margin-left: 12px" @click="resetQuery">
+              重置
+            </a-button>
           </a-col>
         </a-row>
       </a-form>
@@ -97,7 +110,7 @@
 </template>
 
 <script>
-  import { defineComponent, ref, onMounted } from 'vue'
+  import { defineComponent, ref, onMounted, reactive } from 'vue'
   import { message } from 'ant-design-vue'
   import { PlusOutlined } from '@ant-design/icons-vue'
   import { getAllTickets, closeTicket } from '@/api/ticket'
@@ -110,6 +123,14 @@
     setup() {
       const tickets = ref()
       const count = ref()
+      const queryTime = ref()
+      const dateFormat = 'YYYY-MM-DD'
+      const queryItem = reactive({
+        ticket_id: '',
+        ticket_username: '',
+        ticket_status: null,
+        tickets_time: '',
+      })
       onMounted(() => {
         refreshTicket()
       })
@@ -129,11 +150,45 @@
         closeTicket(id).then(refreshTicket)
         message.success('工单已关闭')
       }
+      const submitQuery = () => {
+        let params = {}
+        if (queryItem.tickets_time !== '') {
+          params = {
+            ticket_id: queryItem.ticket_id,
+            ticket_status: queryItem.ticket_status,
+            ticket_username: queryItem.ticket_username,
+            ticket_time: queryItem.tickets_time.format(dateFormat),
+          }
+        } else {
+          params = {
+            ticket_id: queryItem.ticket_id,
+            ticket_status: queryItem.ticket_status,
+            ticket_username: queryItem.ticket_username,
+          }
+        }
+        getAllTickets(params).then((resp) => {
+          tickets.value = resp.data
+        })
+      }
+      const resetQuery = () => {
+        queryItem.ticket_id = ''
+        queryItem.ticket_username = ''
+        queryItem.ticket_status = null
+        queryItem.tickets_time = ''
+        getAllTickets().then((resp) => {
+          tickets.value = resp.data
+        })
+      }
 
       return {
         tickets,
         columns,
         stat,
+        queryItem,
+        queryTime,
+        dateFormat,
+        resetQuery,
+        submitQuery,
         handleDetail,
         confirm,
       }
