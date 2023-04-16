@@ -1,13 +1,34 @@
 <template>
-  <transaction-table status="0" :disabled="false"></transaction-table>
+  <OrderTable
+    ref="tableRef"
+    status="0"
+    :disabled="false"
+    :tableData="tableData"
+  ></OrderTable>
 </template>
 
 <script>
-  import TransactionTable from '@/views/transaction/components/TransactionTable.vue'
+  import OrderTable from '@/views/order/components/OrderTable.vue'
+  import { onMounted, ref } from 'vue'
+  import { getOrderList } from '@/api/order'
+
+  const tableData = ref(null)
+  const tableRef = ref(null)
   export default {
-    name: 'AllTransaction',
+    name: 'AllOrder',
     components: {
-      TransactionTable,
+      OrderTable,
+    },
+    setup() {
+      onMounted(() => {
+        getOrderList().then((resp) => {
+          tableRef.value.loadData(resp.data)
+        })
+      })
+      return {
+        tableData,
+        tableRef,
+      }
     },
   }
 </script>

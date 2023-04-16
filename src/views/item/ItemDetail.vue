@@ -124,7 +124,7 @@
   import { onMounted, ref } from 'vue'
   import { useRoute } from 'vue-router'
   import { getItem, updateItem } from '@/api/item'
-  import { addTags, getTagByItem, getTags } from '@/api/tags'
+  import { addTags, deleteTags, getTagByItem, getTags } from '@/api/tags'
   import { message } from 'ant-design-vue'
   import router from '@/router'
   import ItemSpecDetail from '@/views/item/components/ItemSpecDetail.vue'
@@ -245,12 +245,14 @@
       .then((resp) => {
         saveLoading.value = false
         const item_id = resp.data.id
-        tagValue.value.forEach((tag) => {
-          // TODO: 商品标签可以加不可以删，直接在后端不可重复就可以了
-          const tag_data = { item: item_id, tag: tag }
-          addTags(item_id, tag_data)
+        deleteTags(item_id).then(() => {
+          tagValue.value.forEach((tag) => {
+            const tag_data = { item: item_id, tag: tag }
+            addTags(item_id, tag_data)
+          })
+          message.success('商品保存成功')
+          router.go(-1)
         })
-        message.success('商品保存成功')
       })
       .catch(() => {
         saveLoading.value = false
@@ -292,6 +294,7 @@
           })
         })
         getTagByItem(item_id.value).then((resp) => {
+          tagValue.value = []
           resp.data.forEach((item) => {
             tagValue.value.push(item.tag)
           })

@@ -20,3 +20,10 @@ export function addTags(id, data) {
     data: data,
   })
 }
+
+export function deleteTags(id) {
+  return request({
+    url: `/items/${id}/tags/`,
+    method: 'delete',
+  })
+}

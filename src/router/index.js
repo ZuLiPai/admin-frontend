@@ -44,10 +44,9 @@ export const asyncRoutes = [
     ],
   },
   {
-    path: '/transaction',
+    path: '/order',
     component: Layout,
-    redirect: '/transaction/all',
-    alwaysShow: true,
+    redirect: '/order/all',
     meta: {
       title: '订单管理',
       icon: 'apps-line',
@@ -55,45 +54,18 @@ export const asyncRoutes = [
     children: [
       {
         path: 'all',
-        name: 'AllTransaction',
-        component: () => import('@/views/transaction/AllTransaction.vue'),
+        name: 'AllOrder',
+        component: () => import('@/views/order/AllOrder.vue'),
         meta: {
-          title: '全部订单',
+          title: '订单管理',
           icon: 'table-2',
         },
       },
       {
-        path: 'send',
-        name: 'Send',
-        component: () => import('@/views/transaction/SendTransaction.vue'),
-        meta: {
-          title: '待发货',
-          icon: 'truck-line',
-        },
-      },
-      {
-        path: 'receive',
-        name: 'Receive',
-        component: () => import('@/views/transaction/ReceiveTransaction.vue'),
-        meta: {
-          title: '待签收验机',
-          icon: 'store-2-line',
-        },
-      },
-      {
-        path: 'compensate',
-        name: 'Compensate',
-        component: () =>
-          import('@/views/transaction/CompensateTransaction.vue'),
-        meta: {
-          title: '待处理赔偿',
-          icon: 'money-cny-circle-line',
-        },
-      },
-      {
-        path: 'detail',
-        name: 'Detail',
-        component: () => import('@/views/transaction/OrderDetail.vue'),
+        path: 'detail/:id',
+        name: 'OrderDetail',
+        component: () => import('@/views/order/OrderDetail.vue'),
+        hidden: true,
         meta: {
           title: '订单详情',
           icon: 'bars-outlined',
@@ -104,19 +76,18 @@ export const asyncRoutes = [
   {
     path: '/item',
     component: Layout,
-    redirect: '/item/all',
-    alwaysShow: true,
+    redirect: '/item',
     meta: {
       title: '商品管理',
       icon: 'camera-3-line',
     },
     children: [
       {
-        path: 'all',
+        path: '',
         name: 'AllItem',
         component: () => import('@/views/item/AllItem.vue'),
         meta: {
-          title: '信息管理',
+          title: '商品管理',
           icon: 'camera-3-line',
         },
       },
@@ -138,9 +109,21 @@ export const asyncRoutes = [
           title: '添加商品',
         },
       },
+    ],
+  },
+  {
+    path: '/comment',
+    name: 'Comment',
+    component: Layout,
+    redirect: '/comment',
+    meta: {
+      title: '评论管理',
+      icon: 'chat-heart-line',
+    },
+    children: [
       {
-        path: 'comment',
-        name: 'Comment',
+        path: '',
+        name: 'AllComment',
         component: () => import('@/views/item/AllComment.vue'),
         meta: {
           title: '评论管理',

@@ -88,21 +88,37 @@
           </template>
           <template v-if="column.key === 'status'">
             <a-badge
-              :status="record.status === '赔偿中' ? 'warning' : 'processing'"
-              :text="record.status"
+              :status="statusBadge(record.status)"
+              :text="statusText(record.status)"
             />
           </template>
           <template v-else-if="column.key === 'action'">
             <span>
-              <a>查看</a>
+              <a
+                @click="
+                  this.$router.push({
+                    name: 'OrderDetail',
+                    params: { id: record.id },
+                  })
+                "
+              >
+                查看
+              </a>
               <a-divider type="vertical" />
               <a>工单</a>
-              <a-divider type="vertical" />
-              <a class="ant-dropdown-link">
-                更多操作
-                <down-outlined />
-              </a>
             </span>
+          </template>
+          <template v-else-if="column.key === 'id'">
+            <a
+              @click="
+                this.$router.push({
+                  name: 'OrderDetail',
+                  params: { id: record.id },
+                })
+              "
+            >
+              {{ record.id }}
+            </a>
           </template>
         </template>
       </a-table>
@@ -114,6 +130,40 @@
   import { ref } from 'vue'
   import { UpOutlined, DownOutlined } from '@ant-design/icons-vue'
 
+  const statusBadge = (id) => {
+    if (id === 1 || id === 2 || id === 3 || id === 4) {
+      return 'processing'
+    } else if (id === 0 || id === 6) {
+      return 'success'
+    } else if (id === 7) {
+      return 'error'
+    } else if (id === 5) {
+      return 'warning'
+    }
+  }
+  const statusText = (id) => {
+    switch (id) {
+      case 0:
+        return '已下单'
+      case 1:
+        return '物流中'
+      case 2:
+        return '租赁中'
+      case 3:
+        return '发回物流中'
+      case 4:
+        return '验机中'
+      case 5:
+        return '赔偿中'
+      case 6:
+        return '已完成'
+      case 7:
+        return '已取消'
+      default:
+        return '未知'
+    }
+  }
+
   const columns = [
     {
       name: '订单编号',
@@ -122,13 +172,13 @@
     },
     {
       title: '用户名',
-      dataIndex: 'username',
-      key: 'username',
+      dataIndex: 'user_name',
+      key: 'user_name',
     },
     {
       title: '产品',
-      dataIndex: 'item',
-      key: 'item',
+      dataIndex: 'item_name',
+      key: 'item_name',
     },
     {
       title: '订单状态',
@@ -136,58 +186,46 @@
       dataIndex: 'status',
     },
     {
-      title: '订单时间',
-      key: 'datetime',
-      dataIndex: 'datetime',
+      title: '下单时间',
+      key: 'create_time',
+      dataIndex: 'create_time',
     },
     {
       title: '操作',
       key: 'action',
     },
   ]
-  const data = [
-    {
-      key: '1',
-      id: 1,
-      username: 'John Brown',
-      item: 'Sony a7m3',
-      status: '已下单',
-      datetime: '2023-03-03 11:01',
-    },
-    {
-      key: '2',
-      id: 2,
-      username: 'Jim Green',
-      item: 'Canon 5D Mark IV',
-      status: '赔偿中',
-      datetime: '2023-03-02 21:34',
-    },
-    {
-      key: '3',
-      id: 3,
-      username: 'Joe Black',
-      item: 'DJI Pocket',
-      status: '验机中',
-      datetime: '2023-02-28 09:31',
-    },
-  ]
+  const data = ref([])
 
   const stat = 'processing'
 
   export default {
-    name: 'TransactionTable',
+    name: 'OrderTable',
     components: {
       UpOutlined,
       DownOutlined,
     },
-    props: ['status', 'disabled'],
+    props: ['status', 'disabled', 'tableData'],
     setup(props) {
-      // console.log(props.status, props.disabled)
       const advanced = ref(false)
       function toggleAdvanced() {
         advanced.value = !advanced.value
       }
-      return { advanced, toggleAdvanced, data, columns, stat, props }
+      const loadData = (tableData) => {
+        console.log(tableData)
+        data.value = tableData
+      }
+      return {
+        advanced,
+        toggleAdvanced,
+        data,
+        columns,
+        stat,
+        props,
+        loadData,
+        statusText,
+        statusBadge,
+      }
     },
   }
 </script>
