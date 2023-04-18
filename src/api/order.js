@@ -14,3 +14,18 @@ export function getOrderDetail(id) {
     method: 'get',
   })
 }
+
+export async function getComments(params) {
+  return request({
+    url: `/comments/`,
+    method: 'get',
+    params: params,
+  })
+}
+
+export async function deleteComment(id) {
+  return request({
+    url: `/comments/${id}/`,
+    method: 'delete',
+  })
+}

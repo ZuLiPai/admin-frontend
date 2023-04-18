@@ -1,63 +1,45 @@
 <template>
   <div>
     <div class="table-search">
-      <a-form layout="inline">
+      <a-form>
         <a-row :gutter="48">
-          <a-col :md="8" :sm="24">
-            <a-form-item label="租赁产品">
-              <a-input placeholder="" />
+          <a-col :sm="12" :xs="24">
+            <a-form-item label="产品名称">
+              <a-input placeholder="" v-model:value="queryData.item_name" />
             </a-form-item>
           </a-col>
-          <a-col :md="8" :sm="24">
+          <a-col :sm="12" :xs="24">
+            <a-form-item label="用户名称">
+              <a-input
+                style="width: 100%"
+                v-model:value="queryData.comment_username"
+              />
+            </a-form-item>
+          </a-col>
+        </a-row>
+        <a-row :gutter="48">
+          <a-col :sm="12" :xs="24">
             <a-form-item label="评价分数">
-              <a-select placeholder="请选择">
-                <a-select-option value="1">1星</a-select-option>
-                <a-select-option value="2">2星</a-select-option>
-                <a-select-option value="3">3星</a-select-option>
-                <a-select-option value="4">4星</a-select-option>
-                <a-select-option value="5">5星</a-select-option>
-              </a-select>
+              <a-space direction="vertical">
+                <a-radio-group
+                  v-model:value="queryData.rating"
+                  name="radioGroup"
+                >
+                  <a-radio value="1">1</a-radio>
+                  <a-radio value="2">2</a-radio>
+                  <a-radio value="3">3</a-radio>
+                  <a-radio value="4">4</a-radio>
+                  <a-radio value="5">5</a-radio>
+                </a-radio-group>
+              </a-space>
             </a-form-item>
           </a-col>
-          <template v-if="advanced">
-            <a-col :md="8" :sm="24">
-              <a-form-item label="用户昵称">
-                <a-input style="width: 100%" />
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="评价日期">
-                <a-date-picker
-                  style="width: 100%"
-                  placeholder="请输入评价日期"
-                />
-              </a-form-item>
-            </a-col>
-            <!--            <a-col :md="8" :sm="24">-->
-            <!--              <a-form-item label="租赁产品">-->
-            <!--                <a-input style="width: 100%" />-->
-            <!--              </a-form-item>-->
-            <!--            </a-col>-->
-            <!--            <a-col :md="8" :sm="24">-->
-            <!--              <a-form-item label="支付金额">-->
-            <!--                <a-input-number style="width: 100%" />-->
-            <!--              </a-form-item>-->
-            <!--            </a-col>-->
-          </template>
-          <a-col :md="(!advanced && 8) || 24" :sm="24">
-            <span
-              class="table-page-search-submitButtons"
-              :style="
-                (advanced && { float: 'right', overflow: 'hidden' }) || {}
-              "
-            >
-              <a-button type="primary">查询</a-button>
-              <a-button style="margin-left: 12px">重置</a-button>
-              <a @click="toggleAdvanced" style="margin-left: 12px">
-                {{ advanced ? '收起' : '展开' }}
-                <up-outlined v-if="advanced"></up-outlined>
-                <down-outlined v-if="!advanced"></down-outlined>
-              </a>
+          <a-col>
+            <span class="table-page-search-submitButtons">
+              <a-button type="primary" @click="handleSubmit">查询</a-button>
+              <a-button style="margin-left: 12px" @click="handleReset">
+                重置
+              </a-button>
             </span>
           </a-col>
         </a-row>
@@ -68,35 +50,36 @@
       <a-table :columns="columns" :data-source="data">
         <template #headerCell="{ column }">
           <template v-if="column.key === 'id'">
-            <span>订单编号</span>
+            <span>评论编号</span>
           </template>
         </template>
-
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'rating'">
-            <a-rate v-model:value="record.rating" allow-half disabled />
+            <a-rate v-model:value="record.rating" disabled />
           </template>
-          <template v-if="column.key === 'comment'">
-            {{ cutLongComment(record.comment) }}
+          <template v-if="column.key === 'content'">
+            {{ cutLongComment(record.content) }}
           </template>
           <template v-else-if="column.key === 'action'">
             <span>
-              <a @click="showDetail">查看</a>
-              <a-modal
-                v-model:visible="visible"
-                title="评论详情"
-                @ok="handleOk"
+              <a
+                @click="
+                  showDetail(
+                    record.comment_username,
+                    record.item_name,
+                    record.rating,
+                    record.content
+                  )
+                "
               >
-                <!--                <p>{{ record.rating }}分</p>-->
-                <!--                <p>{{ record.comment }}</p>-->
-                <comment-detail />
-              </a-modal>
+                查看
+              </a>
               <a-divider type="vertical" />
               <a-popconfirm
                 title="确定删除本条评论吗？"
                 ok-text="是的，确定删除"
                 cancel-text="否，不删除"
-                @confirm="confirmDelete"
+                @confirm="confirmDelete(record.id)"
                 @cancel="cancelDelete"
               >
                 <a href="#">删除</a>
@@ -106,110 +89,154 @@
         </template>
       </a-table>
     </div>
+    <a-modal v-model:visible="visible" title="评论详情">
+      <comment-detail
+        :username="modalData.username"
+        :item_name="modalData.item_name"
+        :rating="modalData.rating"
+        :content="modalData.content"
+      />
+      <template #footer>
+        <a-button type="primary" @click="handleOk">返回</a-button>
+      </template>
+    </a-modal>
   </div>
 </template>
 
 <script>
-  import { ref } from 'vue'
-  import { UpOutlined, DownOutlined } from '@ant-design/icons-vue'
+  import { onMounted, reactive, ref } from 'vue'
   import CommentDetail from '@/views/item/CommentDetail.vue'
-
+  import { deleteComment, getComments } from '@/api/order'
+  import { right } from 'core-js/internals/array-reduce'
   const columns = [
     {
-      title: '产品',
-      dataIndex: 'item',
-      key: 'item',
+      name: '评论编号',
+      dataIndex: 'id',
+      key: 'id',
     },
     {
-      title: '用户名',
-      dataIndex: 'username',
-      key: 'username',
+      title: '产品名称',
+      dataIndex: 'item_name',
+      key: 'item_name',
+    },
+    {
+      title: '用户名称',
+      dataIndex: 'comment_username',
+      key: 'comment_username',
     },
     {
       title: '评分',
-      key: 'rating',
       dataIndex: 'rating',
+      key: 'rating',
     },
     {
       title: '评价内容',
-      key: 'comment',
-      dataIndex: 'comment',
+
+      dataIndex: 'content',
+      key: 'content',
     },
     {
       title: '操作',
       key: 'action',
     },
   ]
-  const data = [
-    {
-      username: '王Brown',
-      item: 'Sony a7m3',
-      rating: 5,
-      comment: '非常好用的机器，拍出来的效果完美！',
-    },
-    {
-      username: '吉米Green',
-      item: 'Canon 5D Mark IV',
-      rating: 4.5,
-      comment: '机身略有磕碰，不过用起来没有什么问题，连拍速度很快！',
-    },
-    {
-      username: '乔Black',
-      item: 'DJI Phantom 4',
-      rating: 4,
-      comment:
-        '随附的电池续航有点差，一次飞了20分钟就返航了，有些不太尽兴。不过飞机还算比较新',
-    },
-  ]
 
   export default {
     name: 'AllComment',
+    methods: { right },
     components: {
       CommentDetail,
-      UpOutlined,
-      DownOutlined,
     },
     props: ['status', 'disabled'],
     setup(props) {
-      const advanced = ref(false)
       const visible = ref(false)
-      const showDetail = () => {
+      const data = ref()
+      const modalData = reactive({
+        username: '',
+        item_name: '',
+        rating: null,
+        content: '',
+      })
+      const queryData = reactive({
+        comment_username: '',
+        item_name: '',
+        rating: '',
+        create_time: '',
+      })
+      onMounted(() => {
+        refresh()
+      })
+      const showDetail = (username, itemname, rating, content) => {
+        console.log(username)
+        modalData.username = username
+        modalData.item_name = itemname
+        modalData.rating = rating
+        modalData.content = content
         visible.value = true
       }
-      const handleOk = (e) => {
-        console.log(e)
+      const handleOk = () => {
         visible.value = false
       }
 
-      const confirmDelete = (e) => {
-        console.log(e)
+      const confirmDelete = (id) => {
+        deleteComment(id).then(refresh)
       }
       const cancelDelete = (e) => {
         console.log(e)
       }
-      function toggleAdvanced() {
-        advanced.value = !advanced.value
+      const refresh = () => {
+        getComments().then((resp) => {
+          data.value = resp.data
+        })
       }
-      return {
-        advanced,
-        visible,
-        showDetail,
-        handleOk,
-        toggleAdvanced,
-        confirmDelete,
-        cancelDelete,
-        data,
-        columns,
-        props,
+      const handleReset = () => {
+        queryData.create_time = ''
+        queryData.item_name = ''
+        queryData.rating = ''
+        queryData.comment_username = ''
+        refresh()
       }
-    },
-    methods: {
-      cutLongComment(comment) {
+      const handleSubmit = () => {
+        let params
+        if (queryData.create_time !== '') {
+          params = {
+            create_time: queryData.create_time,
+            item_name: queryData.item_name,
+            rating: queryData.rating,
+            comment_username: queryData.comment_username,
+          }
+        } else {
+          params = {
+            item_name: queryData.item_name,
+            rating: queryData.rating,
+            comment_username: queryData.comment_username,
+          }
+        }
+        getComments(params).then((resp) => {
+          data.value = resp.data
+        })
+      }
+      function cutLongComment(comment) {
         if (comment.length > 15) {
           return comment.substring(0, 15) + '…'
         }
         return comment
-      },
+      }
+      return {
+        visible,
+        showDetail,
+        handleOk,
+        confirmDelete,
+        cancelDelete,
+        cutLongComment,
+        handleReset,
+        handleSubmit,
+        modalData,
+        queryData,
+        data,
+        columns,
+        props,
+      }
     },
   }
 </script>
