@@ -171,12 +171,12 @@
       key: 'id',
     },
     {
-      title: '用户名',
+      title: '用户名称',
       dataIndex: 'user_name',
       key: 'user_name',
     },
     {
-      title: '产品',
+      title: '产品名称',
       dataIndex: 'item_name',
       key: 'item_name',
     },

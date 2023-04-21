@@ -15,15 +15,15 @@
           商品：
           <a>{{ order_data.item_name }}</a>
         </h2>
-        <h3>订单创建时间 {{ order_data.create_time }}</h3>
-        <p>租赁预计开始时间 {{ order_data.expect_start_time }}</p>
-        <p>租赁实际开始时间 {{ order_data.actual_start_time || '' }}</p>
-        <p>租赁预计结束时间 {{ order_data.expect_end_time }}</p>
-        <p>租赁实际结束时间 {{ order_data.actual_end_time || '' }}</p>
-        <h3>订单结束时间</h3>
+        <h3>订单创建时间: {{ order_data.create_time }}</h3>
+        <p>租赁预计开始时间: {{ order_data.expect_start_time }}</p>
+        <p>租赁实际开始时间: {{ order_data.actual_start_time || '' }}</p>
+        <p>租赁预计结束时间: {{ order_data.expect_end_time }}</p>
+        <p>租赁实际结束时间: {{ order_data.actual_end_time || '' }}</p>
+        <h3>订单结束时间: {{ order_data.order_end_time }}</h3>
         <a-row>
           <a-col :xs="24">
-            <h2 style="margin-bottom: 10px">用户评价</h2>
+            <h2 style="margin-bottom: 20px">用户评价</h2>
             <a-card
               title="吉米Green"
               style="width: 80%"

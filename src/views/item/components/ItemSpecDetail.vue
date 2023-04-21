@@ -1,14 +1,17 @@
 <template>
   <div>
     <a-row>
-      <a-col :span="12" style="vertical-align: middle"><h4>商品规格</h4></a-col>
+      <a-col :span="12">
+        <h4>商品规格</h4>
+      </a-col>
       <a-col :span="12">
         <a-button
           class="editable-add-btn"
-          style="margin-bottom: 8px"
+          type="primary"
+          style="margin-bottom: 8px; float: right"
           @click="handleAdd"
         >
-          添加
+          添加规格
         </a-button>
       </a-col>
     </a-row>

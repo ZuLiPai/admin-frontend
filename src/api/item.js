@@ -30,3 +30,25 @@ export async function createItem(data) {
     data: data,
   })
 }
+
+export async function getItemImages(id) {
+  return request({
+    url: `items/${id}/images/`,
+    method: 'get',
+  })
+}
+
+export async function createItemImage(id, data) {
+  return request({
+    url: `items/${id}/images/`,
+    method: 'post',
+    data: data,
+  })
+}
+
+export async function deleteAllItemImages(id) {
+  return request({
+    url: `items/${id}/images/`,
+    method: 'delete',
+  })
+}
