@@ -1,6 +1,11 @@
 <template>
   <div>
     <div class="table-search">
+      <a-row>
+        <a-col :span="12">
+          <h1>评论管理</h1>
+        </a-col>
+      </a-row>
       <a-form>
         <a-row :gutter="48">
           <a-col :sm="12" :xs="24">

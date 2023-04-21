@@ -180,7 +180,7 @@ export const asyncRoutes = [
         },
       },
       {
-        path: 'create',
+        path: 'create/:userId?',
         name: 'CreateTicket',
         component: () => import('@/views/ticket/CreateTicket'),
         meta: { title: '创建工单' },

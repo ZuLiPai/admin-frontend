@@ -1,5 +1,10 @@
 <template>
   <div>
+    <a-row>
+      <a-col :span="12">
+        <h1>订单管理</h1>
+      </a-col>
+    </a-row>
     <div class="table-search">
       <a-form layout="inline">
         <a-row :gutter="48">
@@ -105,7 +110,16 @@
                 查看
               </a>
               <a-divider type="vertical" />
-              <a>工单</a>
+              <a
+                @click="
+                  this.$router.push({
+                    name: 'CreateTicket',
+                    params: { userId: record.user },
+                  })
+                "
+              >
+                工单
+              </a>
             </span>
           </template>
           <template v-else-if="column.key === 'id'">
@@ -150,7 +164,7 @@
       case 2:
         return '租赁中'
       case 3:
-        return '发回物流中'
+        return '归还中'
       case 4:
         return '验机中'
       case 5:

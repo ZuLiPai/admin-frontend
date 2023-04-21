@@ -1,10 +1,6 @@
 <template>
   <div>
-    <a-row :gutter="16">
-      <a-col :span="12">
-        <h1>订单详细信息</h1>
-      </a-col>
-    </a-row>
+    <a-page-header title="订单详细信息" @back="this.$router.back()" />
     <a-row>
       <a-col :span="12">
         <h2>
@@ -25,16 +21,16 @@
           <a-col :xs="24">
             <h2 style="margin-bottom: 20px">用户评价</h2>
             <a-card
-              title="吉米Green"
+              :title="comments.comment_username"
               style="width: 80%"
               v-if="order_data.is_commented"
             >
               <template #extra>
-                <a href="#">佳能 Canon 5D Mark IV</a>
+                <a>商品:{{ comments.item_name }}</a>
               </template>
-              <a-rate v-model:value="rating" allow-half disabled></a-rate>
+              <a-rate v-model:value="comments.rating" disabled></a-rate>
               <p>
-                随附的电池续航有点差，一次飞了20分钟就返航了，有些不太尽兴。不过飞机还算比较新
+                {{ comments.content }}
               </p>
             </a-card>
             <a-empty
@@ -47,14 +43,11 @@
       </a-col>
       <a-col :span="6">
         <h2 style="margin-bottom: 40px">当前状态</h2>
-        <a-steps direction="vertical" :current="order_data.status">
+        <a-steps direction="vertical" :current="status">
           <a-step title="已付款，等待发货" description="点击此处以发货" />
           <a-step title="已发货，物流中" description="运单号 SF13800138000" />
           <a-step title="租赁中" description="用户正在使用" />
-          <a-step
-            title="商品归还中"
-            :description="'aaa' + order_data.create_time"
-          />
+          <a-step title="商品归还中" :description="order_data.create_time" />
           <a-step title="验机中" description="点击此处以确认商品状态" />
           <a-step title="赔偿中" description="" />
           <a-step title="订单完成" description="" />
@@ -65,7 +58,7 @@
         <h2>修改订单状态</h2>
         <a-select
           style="width: 100%"
-          v-model:value="v"
+          v-model:value="selectStatus"
           :placeholder="statusText(order_data.status)"
         >
           <a-select-option value="0">已付款，等待发货</a-select-option>
@@ -77,10 +70,26 @@
           <a-select-option value="6">订单完成</a-select-option>
           <a-select-option value="7">已取消</a-select-option>
         </a-select>
-        <a-button type="primary" style="margin-top: 10px" block>
+        <a-button
+          type="primary"
+          @click="handleChangeStatus(order_data.id)"
+          style="margin-top: 10px"
+          block
+        >
           确认修改
         </a-button>
-        <a-button type="ghost" style="margin-top: 20px" danger block>
+        <a-button
+          type="ghost"
+          @click="
+            this.$router.push({
+              name: 'CreateTicket',
+              params: { userId: order_data.user },
+            })
+          "
+          style="margin-top: 20px"
+          danger
+          block
+        >
           发起工单
         </a-button>
       </a-col>
@@ -91,8 +100,9 @@
 <script>
   import { defineComponent, onMounted, ref } from 'vue'
   import { useRoute } from 'vue-router'
-  import { getOrderDetail } from '@/api/order'
-  const order_data = ref({})
+  import { getOrderComments, getOrderDetail, updateOrder } from '@/api/order'
+  import { message } from 'ant-design-vue'
+  import router from '@/router'
   const statusText = (id) => {
     switch (id) {
       case 0:
@@ -116,15 +126,54 @@
   export default defineComponent({
     name: 'OrderDetail',
     setup() {
+      const order_data = ref({})
       const route = useRoute()
       const order_id = route.params.id
+      const status = ref()
+      const comments = ref({})
+      const selectStatus = ref(undefined)
       onMounted(() => {
+        refreshPage(order_id)
+        refreshComment(order_id)
+      })
+      const refreshPage = (order_id) => {
         getOrderDetail(order_id).then((resp) => {
           console.log(resp.data)
           order_data.value = resp.data
+          status.value = resp.data.status
         })
-      })
-      return { order_id, order_data, statusText }
+      }
+      const refreshComment = (order_id) => {
+        getOrderComments(order_id).then((resp) => {
+          comments.value = resp.data
+        })
+        console.log(comments)
+      }
+      const handleChangeStatus = (id) => {
+        if (selectStatus.value === undefined) {
+          message.error(`请选择订单状态`)
+          return
+        }
+        const data = {
+          id: order_data.value.id,
+          status: selectStatus.value,
+          expect_end_time: order_data.value.expect_end_time,
+          expect_start_time: order_data.value.expect_start_time,
+        }
+        updateOrder(id, data).then(() => {
+          message.success(`订单状态修改成功`)
+          router.go(-1)
+        })
+      }
+      return {
+        order_id,
+        order_data,
+        status,
+        selectStatus,
+        comments,
+        statusText,
+        handleChangeStatus,
+      }
     },
   })
 </script>

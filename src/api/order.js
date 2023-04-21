@@ -29,3 +29,18 @@ export async function deleteComment(id) {
     method: 'delete',
   })
 }
+
+export async function updateOrder(id, data) {
+  return request({
+    url: `/orders/${id}/`,
+    method: 'patch',
+    data: data,
+  })
+}
+
+export async function getOrderComments(id) {
+  return request({
+    url: `/orders/${id}/comments`,
+    method: 'get',
+  })
+}

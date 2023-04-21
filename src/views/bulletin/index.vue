@@ -3,13 +3,21 @@
 <template>
   <div>
     <div class="components-page-header-demo-responsive">
-      <a-page-header title="公告管理" @back="() => $router.go(-1)">
-        <template #extra>
-          <a-button key="1" type="primary" @click="showModal">
+      <a-row>
+        <a-col :span="12">
+          <h1>公告管理</h1>
+        </a-col>
+        <a-col :span="12">
+          <a-button
+            key="1"
+            type="primary"
+            @click="showModal"
+            style="float: right"
+          >
             创建公告
           </a-button>
-        </template>
-      </a-page-header>
+        </a-col>
+      </a-row>
     </div>
     <div>
       <a-modal
