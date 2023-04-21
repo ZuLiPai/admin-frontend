@@ -40,8 +40,8 @@
         </template>
         <template v-else-if="column.key === 'tags'">
           <span>
-            <a-tag v-for="tag in record.tags" :key="tag.id" color="blue">
-              {{ tag.name }}
+            <a-tag v-for="tag in record.tags_item" :key="tag.id" color="blue">
+              {{ tag.tag_name }}
             </a-tag>
           </span>
         </template>
@@ -88,7 +88,6 @@
   import { defineComponent, onMounted, ref } from 'vue'
   import { DownOutlined, PlusOutlined } from '@ant-design/icons-vue'
   import { getItems } from '@/api/item'
-  import { getTagByItem } from '@/api/tags'
 
   const columns = [
     {
@@ -167,19 +166,6 @@
       onMounted(() => {
         getItems().then((resp) => {
           data.value = resp.data
-          data.value.forEach((item) => {
-            // TODO: 这太2了，应该直接在后端返回tag的
-            getTagByItem(item.id).then((resp) => {
-              const t = []
-              resp.data.forEach((tag) => {
-                t.push({
-                  id: tag.id,
-                  name: tag.tag_name,
-                })
-              })
-              item.tags = t
-            })
-          })
         })
       })
       return {

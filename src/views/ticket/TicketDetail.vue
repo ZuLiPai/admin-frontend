@@ -30,7 +30,7 @@
         <template v-for="message in messages" v-bind:key="message.id">
           <a-card
             :title="message.isCustomer === true ? '用户' : '客服'"
-            style="width: 100%"
+            style="width: 100%; margin-bottom: 20px"
           >
             <template #extra>
               <span>{{ message.ticket_message_date }}</span>
@@ -42,7 +42,7 @@
         </template>
       </a-col>
     </a-row>
-    <div v-if="status === false">
+    <div v-if="status === false" style="margin-top: 10px">
       <a-row>
         <a-col :span="24">
           <a-textarea
@@ -102,8 +102,7 @@
         message.success('工单已关闭')
       }
       const handleSubmit = () => {
-        console.log(text.value)
-        if (text.value === '') {
+        if (!text.value) {
           message.warn('回复内容不能为空')
           return
         }
@@ -111,7 +110,10 @@
           ticket_message: text.value,
           isCustomer: false,
         }
-        createTicketMessage(ticketId, data).then(refreshDetail)
+        createTicketMessage(ticketId, data).then(() => {
+          text.value = ''
+          refreshDetail()
+        })
       }
       return {
         messages,
