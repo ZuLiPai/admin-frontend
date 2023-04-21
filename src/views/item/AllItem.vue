@@ -2,7 +2,7 @@
   <div>
     <a-row>
       <a-col :span="12">
-        <h1>产品管理</h1>
+        <h1>商品管理</h1>
       </a-col>
       <a-col :span="12">
         <a-button
@@ -45,6 +45,18 @@
             </a-tag>
           </span>
         </template>
+        <template v-if="column.key === 'show_status'">
+          <a-badge
+            :status="record.show_status === true ? 'success' : 'error'"
+            :text="record.show_status === true ? '上架中' : '已下架'"
+          />
+        </template>
+        <template v-if="column.key === 'promo_status'">
+          <a-badge
+            :status="record.promo_status === true ? 'success' : 'error'"
+            :text="record.promo_status === true ? '促销中' : '未促销'"
+          />
+        </template>
         <template v-else-if="column.key === 'action'">
           <span>
             <a
@@ -55,28 +67,8 @@
                 })
               "
             >
-              查看
+              编辑商品
             </a>
-            <a-divider type="vertical" />
-            <a-dropdown>
-              <a class="ant-dropdown-link">
-                更多
-                <DownOutlined />
-              </a>
-              <template #overlay>
-                <a-menu>
-                  <a-menu-item>
-                    <a href="javascript:;">改价</a>
-                  </a-menu-item>
-                  <a-menu-item>
-                    <a href="javascript:;">下架</a>
-                  </a-menu-item>
-                  <a-menu-item>
-                    <a href="javascript:;">其他动作…</a>
-                  </a-menu-item>
-                </a-menu>
-              </template>
-            </a-dropdown>
           </span>
         </template>
       </template>
@@ -86,7 +78,7 @@
 
 <script>
   import { defineComponent, onMounted, ref } from 'vue'
-  import { DownOutlined, PlusOutlined } from '@ant-design/icons-vue'
+  import { PlusOutlined } from '@ant-design/icons-vue'
   import { getItems } from '@/api/item'
 
   const columns = [
@@ -151,6 +143,16 @@
       dataIndex: 'tags',
     },
     {
+      title: '上架状态',
+      key: 'show_status',
+      dataIndex: 'show_status',
+    },
+    {
+      title: '促销状态',
+      key: 'promo_status',
+      dataIndex: 'promo_status',
+    },
+    {
       title: '操作',
       key: 'action',
     },
@@ -159,7 +161,6 @@
   export default defineComponent({
     name: 'AllItem',
     components: {
-      DownOutlined,
       PlusOutlined,
     },
     setup() {

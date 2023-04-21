@@ -11,6 +11,7 @@
         />
         <a-select
           ref="select"
+          show-search
           v-model:value="itemType"
           :options="types"
           style="width: 100%; margin-bottom: 20px"
@@ -156,7 +157,7 @@
       const route = useRoute()
       const item_id = ref('')
       const itemName = ref('')
-      const itemType = ref('')
+      const itemType = ref(undefined)
       const itemPrice = ref()
       const itemDeposit = ref()
       const itemStock = ref()
@@ -288,7 +289,7 @@
               status: 'done',
               url: image.image_url,
               response: {
-                image_id: image.item_image_id,
+                image_id: image.image,
               },
             })
             console.log(fileList.value)
