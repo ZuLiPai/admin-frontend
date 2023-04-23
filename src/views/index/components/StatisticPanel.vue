@@ -1,29 +1,35 @@
 <template>
   <a-row>
     <a-col :lg="12" :xs="24">
-      <a-card title="相机销售额" :style="{ minHeight: '250px' }">
+      <a-card title="营收数据" :style="{ minHeight: '250px' }">
         <a-row>
-          <a-col :span="12">
+          <a-col :span="8">
             <a-statistic
-              title="当日销售额"
-              :value="11289"
+              title="今日销售额"
+              :value="todaySaleMoney + '元'"
               style="margin-right: 50px"
             />
           </a-col>
-          <a-col :span="12">
-            <a-statistic title="近30日销售额" :value="839279" />
+          <a-col :span="8">
+            <a-statistic title="本月销售额" :value="monthSaleMoney + '元'" />
+          </a-col>
+          <a-col :span="8">
+            <a-statistic title="押金总额" :value="depositSum + '元'" />
           </a-col>
         </a-row>
         <a-row style="margin-top: 50px">
-          <a-col :span="12">
+          <a-col :span="8">
             <a-statistic
-              title="近30日销售量"
-              :value="173"
+              title="今日租赁量"
+              :value="todaySaleVolume"
               style="margin-right: 50px"
             />
           </a-col>
-          <a-col :span="12">
-            <a-statistic title="待归还数量" :value="108" />
+          <a-col :span="8">
+            <a-statistic title="本月租赁量" :value="monthSaleVolume" />
+          </a-col>
+          <a-col :span="8">
+            <a-statistic title="待归还商品" :value="waitingBack" />
           </a-col>
         </a-row>
       </a-card>
@@ -77,14 +83,78 @@
 
 <script>
   import * as echarts from 'echarts'
-  import { onMounted } from 'vue'
+  import { onMounted, reactive, ref } from 'vue'
+  import { getAllFinance } from '@/api/finance'
   export default {
     name: 'StatisticPanel',
     setup() {
+      const data = reactive([])
+      const todaySaleMoney = ref()
+      const monthSaleMoney = ref()
+      const todaySaleVolume = ref()
+      const monthSaleVolume = ref()
+      const depositSum = ref()
+      const waitingBack = ref()
       onMounted(() => {
+        refreshPage()
         initChart()
       })
+      const refreshPage = () => {
+        //Initiate values to zero
+        todaySaleMoney.value = 0
+        monthSaleMoney.value = 0
+        todaySaleVolume.value = 0
+        monthSaleVolume.value = 0
+        depositSum.value = 0
+        waitingBack.value = 0
+        //Get data
+        getAllFinance().then((resp) => {
+          resp.data.forEach((s) => {
+            data.push(s)
+          })
+          const todayDate = new Date()
+          const monthFirstDate = new Date(
+            todayDate.getFullYear(),
+            todayDate.getMonth(),
+            1
+          )
+          data.forEach((t) => {
+            if (t.status < 6) {
+              depositSum.value = Number(depositSum.value) + Number(t.deposit)
+            }
+            if (t.status > 1 && t.status < 5) {
+              waitingBack.value = Number(waitingBack.value) + 1
+            }
+            const tDate = new Date(
+              t.create_time.substring(0, 4),
+              t.create_time.substring(5, 7) - 1,
+              t.create_time.substring(8, 10)
+            )
+            if (tDate >= monthFirstDate) {
+              monthSaleVolume.value = Number(monthSaleVolume.value) + 1
+              monthSaleMoney.value =
+                Number(monthSaleMoney.value) + Number(t.payment)
+              if (formatDate(tDate) === formatDate(Date.now())) {
+                todaySaleVolume.value = Number(todaySaleVolume.value) + 1
+                todaySaleMoney.value +=
+                  Number(todaySaleMoney.value) + Number(t.payment)
+              }
+            }
+          })
+        })
+        //Compute sale data
+      }
+      function formatDate(date) {
+        var d = new Date(date),
+          month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = d.getFullYear()
 
+        if (month.length < 2) month = '0' + month
+        if (day.length < 2) day = '0' + day
+
+        return [year, month, day].join('-').toString()
+      }
       function initChart() {
         let chartTransactionCategory = echarts.init(
           document.getElementById('chartTransactionCategory')
@@ -197,7 +267,16 @@
           chartTicket.resize()
         }
       }
-      return { initChart }
+      return {
+        initChart,
+        data,
+        todaySaleMoney,
+        monthSaleMoney,
+        todaySaleVolume,
+        monthSaleVolume,
+        depositSum,
+        waitingBack,
+      }
     },
   }
 </script>
