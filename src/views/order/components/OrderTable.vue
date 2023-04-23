@@ -6,11 +6,11 @@
       </a-col>
     </a-row>
     <div class="table-search">
-      <a-form layout="inline">
+      <a-form>
         <a-row :gutter="48">
           <a-col :md="8" :sm="24">
             <a-form-item label="订单编号">
-              <a-input placeholder="" />
+              <a-input placeholder="" v-model:value="queryId" />
             </a-form-item>
           </a-col>
           <a-col :md="8" :sm="24">
@@ -19,58 +19,38 @@
                 placeholder="请选择"
                 :default-value="props.status"
                 :disabled="props.disabled"
+                v-model:value="queryStat"
               >
-                <a-select-option value="0">全部</a-select-option>
-                <a-select-option value="1">已下单</a-select-option>
-                <a-select-option value="2">物流中</a-select-option>
-                <a-select-option value="3">租赁中</a-select-option>
-                <a-select-option value="4">发回物流中</a-select-option>
-                <a-select-option value="5">验机中</a-select-option>
-                <a-select-option value="6">赔偿中</a-select-option>
-                <a-select-option value="7">已完成</a-select-option>
-                <a-select-option value="8">已取消</a-select-option>
+                <a-select-option value="all">全部</a-select-option>
+                <a-select-option value="0">已下单</a-select-option>
+                <a-select-option value="1">物流中</a-select-option>
+                <a-select-option value="2">租赁中</a-select-option>
+                <a-select-option value="3">发回物流中</a-select-option>
+                <a-select-option value="4">验机中</a-select-option>
+                <a-select-option value="5">赔偿中</a-select-option>
+                <a-select-option value="6">已完成</a-select-option>
+                <a-select-option value="7">已取消</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
-          <template v-if="advanced">
-            <a-col :md="8" :sm="24">
-              <a-form-item label="用户昵称">
-                <a-input style="width: 100%" />
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="租赁日期">
-                <a-date-picker
-                  style="width: 100%"
-                  placeholder="请输入更新日期"
-                />
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="租赁产品">
-                <a-input style="width: 100%" />
-              </a-form-item>
-            </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="支付金额">
-                <a-input-number style="width: 100%" />
-              </a-form-item>
-            </a-col>
-          </template>
-          <a-col :md="(!advanced && 8) || 24" :sm="24">
-            <span
-              class="table-page-search-submitButtons"
-              :style="
-                (advanced && { float: 'right', overflow: 'hidden' }) || {}
-              "
-            >
-              <a-button type="primary">查询</a-button>
-              <a-button style="margin-left: 12px">重置</a-button>
-              <a @click="toggleAdvanced" style="margin-left: 12px">
-                {{ advanced ? '收起' : '展开' }}
-                <up-outlined v-if="advanced"></up-outlined>
-                <down-outlined v-if="!advanced"></down-outlined>
-              </a>
+        </a-row>
+        <a-row :gutter="48">
+          <a-col :md="8" :sm="24">
+            <a-form-item label="用户昵称">
+              <a-input style="width: 100%" v-model:value="queryName" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="8" :sm="24">
+            <a-form-item label="租赁产品">
+              <a-input style="width: 100%" v-model:value="queryItem" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="8" :sm="24">
+            <span class="table-page-search-submitButtons">
+              <a-button type="primary" @click="submitQuery">查询</a-button>
+              <a-button style="margin-left: 12px" @click="resetQuery">
+                重置
+              </a-button>
             </span>
           </a-col>
         </a-row>
@@ -142,7 +122,8 @@
 
 <script>
   import { ref } from 'vue'
-  import { UpOutlined, DownOutlined } from '@ant-design/icons-vue'
+  import { getOrderList } from '@/api/order'
+  // import { UpOutlined, DownOutlined } from '@ant-design/icons-vue'
 
   const statusBadge = (id) => {
     if (id === 1 || id === 2 || id === 3 || id === 4) {
@@ -200,11 +181,6 @@
       dataIndex: 'status',
     },
     {
-      title: '下单时间',
-      key: 'create_time',
-      dataIndex: 'create_time',
-    },
-    {
       title: '操作',
       key: 'action',
     },
@@ -212,30 +188,54 @@
   const data = ref([])
 
   const stat = 'processing'
+  const queryId = ref('')
+  const queryName = ref('')
+  const queryStat = ref('全部')
+  const queryItem = ref('')
+  const submitQuery = () => {
+    const param = {
+      id: queryId.value,
+      username: queryName.value,
+      status: queryStat.value,
+      item: queryItem.value,
+    }
+    getOrderList(param).then((resp) => {
+      data.value = resp.data
+    })
+  }
+
+  const resetQuery = () => {
+    queryId.value = ''
+    queryName.value = ''
+    queryStat.value = ''
+    queryItem.value = ''
+    getOrderList().then((resp) => {
+      data.value = resp.data
+    })
+  }
 
   export default {
     name: 'OrderTable',
-    components: {
-      UpOutlined,
-      DownOutlined,
-    },
+    components: {},
     props: ['status', 'disabled', 'tableData'],
     setup(props) {
       const advanced = ref(false)
-      function toggleAdvanced() {
-        advanced.value = !advanced.value
-      }
       const loadData = (tableData) => {
         console.log(tableData)
         data.value = tableData
       }
       return {
         advanced,
-        toggleAdvanced,
         data,
         columns,
         stat,
         props,
+        queryId,
+        queryName,
+        queryStat,
+        queryItem,
+        submitQuery,
+        resetQuery,
         loadData,
         statusText,
         statusBadge,
