@@ -1,5 +1,10 @@
 <template>
   <div>
+    <a-row>
+      <a-col :span="12">
+        <h1>用户管理</h1>
+      </a-col>
+    </a-row>
     <div class="table-search">
       <a-form layout="inline">
         <a-row :gutter="48">

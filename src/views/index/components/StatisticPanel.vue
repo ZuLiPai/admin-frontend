@@ -2,36 +2,38 @@
   <a-row>
     <a-col :lg="12" :xs="24">
       <a-card title="营收数据" :style="{ minHeight: '250px' }">
-        <a-row>
-          <a-col :span="8">
-            <a-statistic
-              title="今日销售额"
-              :value="todaySaleMoney + '元'"
-              style="margin-right: 50px"
-            />
-          </a-col>
-          <a-col :span="8">
-            <a-statistic title="本月销售额" :value="monthSaleMoney + '元'" />
-          </a-col>
-          <a-col :span="8">
-            <a-statistic title="押金总额" :value="depositSum + '元'" />
-          </a-col>
-        </a-row>
-        <a-row style="margin-top: 50px">
-          <a-col :span="8">
-            <a-statistic
-              title="今日租赁量"
-              :value="todaySaleVolume"
-              style="margin-right: 50px"
-            />
-          </a-col>
-          <a-col :span="8">
-            <a-statistic title="本月租赁量" :value="monthSaleVolume" />
-          </a-col>
-          <a-col :span="8">
-            <a-statistic title="待归还商品" :value="waitingBack" />
-          </a-col>
-        </a-row>
+        <div :style="{ height: '250px', width: '100%' }">
+          <a-row>
+            <a-col :span="8">
+              <a-statistic
+                title="今日销售额"
+                :value="todaySaleMoney + '元'"
+                style="margin-right: 50px"
+              />
+            </a-col>
+            <a-col :span="8">
+              <a-statistic title="本月销售额" :value="monthSaleMoney + '元'" />
+            </a-col>
+            <a-col :span="8">
+              <a-statistic title="押金总额" :value="depositSum + '元'" />
+            </a-col>
+          </a-row>
+          <a-row style="margin-top: 50px">
+            <a-col :span="8">
+              <a-statistic
+                title="今日租赁量"
+                :value="todaySaleVolume"
+                style="margin-right: 50px"
+              />
+            </a-col>
+            <a-col :span="8">
+              <a-statistic title="本月租赁量" :value="monthSaleVolume" />
+            </a-col>
+            <a-col :span="8">
+              <a-statistic title="待归还商品" :value="waitingBack" />
+            </a-col>
+          </a-row>
+        </div>
       </a-card>
     </a-col>
     <a-col :lg="12" :xs="24">
@@ -55,7 +57,7 @@
   </a-row>
   <a-row>
     <a-col :lg="12" :xs="24">
-      <a-card title="评价">
+      <a-card title="评价数据">
         <a-row :style="{ minHeight: '250px' }">
           <a-col :span="24">
             <div
@@ -85,6 +87,8 @@
   import * as echarts from 'echarts'
   import { onMounted, reactive, ref } from 'vue'
   import { getAllFinance } from '@/api/finance'
+  import { getComments, getOrderList } from '@/api/order'
+  import { getAllTickets } from '@/api/ticket'
   export default {
     name: 'StatisticPanel',
     setup() {
@@ -95,9 +99,28 @@
       const monthSaleVolume = ref()
       const depositSum = ref()
       const waitingBack = ref()
+      const comments = []
+      const rating = ref([])
+      const order = []
+      const itemType = ['相机', '镜头', '无人机', '配件']
+      const itemVolume = []
+      const messages = []
+      const allTicketsStatistic = [0, 0, 0, 0, 0, 0, 0]
+      const handledTicketStatistic = [0, 0, 0, 0, 0, 0, 0]
+      const todayDate = new Date()
+      const monthFirstDate = new Date(
+        todayDate.getFullYear(),
+        todayDate.getMonth(),
+        1
+      )
+      const datesArray = []
       onMounted(() => {
+        for (let i = 0; i < 7; i++) {
+          let date = new Date()
+          date.setDate(todayDate.getDate() - 6 + i)
+          datesArray.push(date.toISOString().slice(0, 10))
+        }
         refreshPage()
-        initChart()
       })
       const refreshPage = () => {
         //Initiate values to zero
@@ -107,17 +130,11 @@
         monthSaleVolume.value = 0
         depositSum.value = 0
         waitingBack.value = 0
-        //Get data
+        //First Card
         getAllFinance().then((resp) => {
           resp.data.forEach((s) => {
             data.push(s)
           })
-          const todayDate = new Date()
-          const monthFirstDate = new Date(
-            todayDate.getFullYear(),
-            todayDate.getMonth(),
-            1
-          )
           data.forEach((t) => {
             if (t.status < 6) {
               depositSum.value = Number(depositSum.value) + Number(t.deposit)
@@ -142,7 +159,88 @@
             }
           })
         })
-        //Compute sale data
+        //Second Card
+        getOrderList().then((resp) => {
+          resp.data.forEach((r) => {
+            order.push(r)
+          })
+          let camera = 0
+          let len = 0
+          let uav = 0
+          let acs = 0
+          order.forEach((t) => {
+            if (t.item_type === itemType[0]) camera += 1
+            else if (t.item_type === itemType[1]) len += 1
+            else if (t.item_type === itemType[2]) uav += 1
+            else if (t.item_type === itemType[3]) acs += 1
+          })
+          itemVolume.push(camera)
+          itemVolume.push(len)
+          itemVolume.push(uav)
+          itemVolume.push(acs)
+        })
+        //Third Card
+        getComments().then((resp) => {
+          resp.data.forEach((r) => {
+            comments.push(r)
+          })
+          let one = 0
+          let two = 0
+          let three = 0
+          let four = 0
+          let five = 0
+          comments.forEach((t) => {
+            if (Number(t.rating) === 5) {
+              five += 1
+            } else if (Number(t.rating) === 4) {
+              four += 1
+            } else if (Number(t.rating) === 3) {
+              three += 1
+            } else if (Number(t.rating) === 2) {
+              two += 1
+            } else if (Number(t.rating) === 1) {
+              one += 1
+            }
+          })
+          rating.value.push(one)
+          rating.value.push(two)
+          rating.value.push(three)
+          rating.value.push(four)
+          rating.value.push(five)
+          console.log(rating.value)
+        })
+
+        //Fourth Card
+        getAllTickets()
+          .then((resp) => {
+            resp.data.forEach((r) => {
+              messages.push(r)
+            })
+            messages.forEach((t) => {
+              const ticketDateString = t.ticket_time.slice(0, 10)
+              const ticketDate = new Date(
+                t.ticket_time.substring(0, 4),
+                t.ticket_time.substring(5, 7) - 1,
+                t.ticket_time.substring(8, 10)
+              )
+              const earlierDate = new Date(
+                datesArray[0].substring(0, 4),
+                datesArray[0].substring(5, 7) - 1,
+                datesArray[0].substring(8, 10)
+              )
+              if (ticketDate >= earlierDate) {
+                for (let i = 0; i < 7; i++) {
+                  if (ticketDateString === datesArray[i]) {
+                    allTicketsStatistic[i] += 1
+                    if (t.ticket_status === 'true') {
+                      handledTicketStatistic[i] += 1
+                    }
+                  }
+                }
+              }
+            })
+          })
+          .then(() => initChart())
       }
       function formatDate(date) {
         var d = new Date(date),
@@ -165,13 +263,14 @@
           },
           series: [
             {
-              name: '相机类型',
+              name: '商品类型',
               type: 'pie',
               radius: '50%',
               data: [
-                { value: 1048, name: '镜头' },
-                { value: 835, name: '相机' },
-                { value: 300, name: '无人机' },
+                { value: itemVolume[0], name: itemType[0] },
+                { value: itemVolume[1], name: itemType[1] },
+                { value: itemVolume[2], name: itemType[2] },
+                { value: itemVolume[3], name: itemType[3] },
               ],
               emphasis: {
                 itemStyle: {
@@ -221,7 +320,7 @@
           },
           series: [
             {
-              data: [12, 10, 15, 11, 40],
+              data: rating.value,
               type: 'bar',
               color: '#e36c6c',
             },
@@ -234,25 +333,25 @@
             trigger: 'axis',
           },
           legend: {
-            data: ['总工单数量', '已处理工单'],
+            data: ['新工单数量', '当日处理量'],
           },
           xAxis: {
             type: 'category',
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            data: datesArray,
           },
           yAxis: {
             type: 'value',
           },
           series: [
             {
-              name: '总工单数量',
-              data: [82, 93, 90, 108, 129, 133, 132],
+              name: '新工单数量',
+              data: allTicketsStatistic,
               type: 'line',
               smooth: true,
             },
             {
-              name: '已处理工单',
-              data: [135, 120, 110, 90, 80, 75, 60],
+              name: '当日处理量',
+              data: handledTicketStatistic,
               type: 'line',
               smooth: true,
             },
