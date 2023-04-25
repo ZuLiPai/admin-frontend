@@ -67,7 +67,7 @@
                 })
               "
             >
-              编辑商品
+              编辑
             </a>
           </span>
         </template>
@@ -127,6 +127,10 @@
         {
           text: '无人机',
           value: '无人机',
+        },
+        {
+          text: '配件',
+          value: '配件',
         },
       ],
       onFilter: (value, record) => record.type.indexOf(value) === 0,
