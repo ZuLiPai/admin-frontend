@@ -27,7 +27,6 @@ const handleCode = (code, msg) => {
     message.error(msg || '登录失效')
     store.dispatch('user/resetAll').catch(() => {})
   } else if (code === 403) {
-    // TODO: 尝试使用refreshToken
     message.error('权限不足或登录状态过期，请重新登录')
     store.dispatch('user/resetAll').catch(() => {})
     router.push({ path: '/login' }).catch(() => {})

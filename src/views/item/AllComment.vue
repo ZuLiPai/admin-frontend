@@ -109,6 +109,7 @@
 </template>
 
 <script>
+  // TODO: 搜索功能还有bug
   import { onMounted, reactive, ref } from 'vue'
   import CommentDetail from '@/views/item/CommentDetail.vue'
   import { deleteComment, getComments } from '@/api/order'

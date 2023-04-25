@@ -47,15 +47,6 @@
       onMounted(() => {
         if (props.image) {
           getImage(props.image).then((resp) => {
-            // TODO: lazy-load image
-            // const pixels = decode(resp.data.hash, 32, 32)
-            // const canvas = document.createElement('canvas')
-            // const ctx = canvas.getContext('2d')
-            // const imageData = ctx.createImageData(32, 32)
-            // imageData.data.set(pixels)
-            // ctx.putImageData(imageData, 0, 0)
-            // document.body.append(canvas)
-
             imageUrl.value = resp.data.url
           })
         }
