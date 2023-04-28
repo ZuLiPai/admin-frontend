@@ -44,3 +44,18 @@ export async function getOrderComments(id) {
     method: 'get',
   })
 }
+
+export async function getExpressCompany() {
+  return request({
+    url: `/express/`,
+    method: 'get',
+  })
+}
+
+export async function createExpress(id, data) {
+  return request({
+    url: `/orders/${id}/express/`,
+    method: 'post',
+    data: data,
+  })
+}

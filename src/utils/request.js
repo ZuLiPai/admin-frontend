@@ -110,7 +110,7 @@ instance.interceptors.response.use(
   (error) => {
     if (loadingInstance) loadingInstance.close()
     const { response, message } = error
-    console.log('error', response, message)
+    // console.log('error', response, message)
     if (error.response && error.response.data) {
       const { status, data } = response
       handleCode(
