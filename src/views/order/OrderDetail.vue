@@ -21,16 +21,16 @@
           <a-col :xs="24">
             <h2 style="margin-bottom: 20px">用户评价</h2>
             <a-card
-              :title="comments[0].comment_username"
+              :title="comments.username"
               style="width: 80%"
               v-if="order_data.is_commented"
             >
               <template #extra>
-                <a>商品:{{ comments[0].item_name }}</a>
+                <a>商品:{{ comments.item }}</a>
               </template>
-              <a-rate v-model:value="comments[0].rating" disabled></a-rate>
+              <a-rate v-model:value="comments.rating" disabled></a-rate>
               <p>
-                {{ comments[0].content }}
+                {{ comments.content }}
               </p>
             </a-card>
             <a-empty
@@ -232,7 +232,6 @@
       const route = useRoute()
       const order_id = route.params.id
       const status = ref()
-      const comments = ref()
       const selectStatus = ref(undefined)
       const modalVisible = ref(false)
       const expressCompanyOption = ref([])
@@ -241,6 +240,12 @@
         express_order: order_id,
         express_name_id: '',
         express_number: '',
+      })
+      const comments = reactive({
+        username: '',
+        item: '',
+        content: '',
+        rating: '',
       })
       const expressText1 = ref()
       const expressText2 = ref()
@@ -271,8 +276,10 @@
       const refreshComment = (order_id) => {
         getOrderComments(order_id)
           .then((resp) => {
-            comments.value = resp.data
-            console.log('111', comments.value)
+            comments.username = resp.data.comment_username
+            comments.item = resp.data.item_name
+            comments.rating = resp.data.rating
+            comments.content = resp.data.content
           })
           .catch(() => {
             console.log('该商品暂无评论')
