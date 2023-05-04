@@ -21,16 +21,16 @@
           <a-col :xs="24">
             <h2 style="margin-bottom: 20px">用户评价</h2>
             <a-card
-              :title="comments.comment_username"
+              :title="comments[0].comment_username"
               style="width: 80%"
               v-if="order_data.is_commented"
             >
               <template #extra>
-                <a>商品:{{ comments.item_name }}</a>
+                <a>商品:{{ comments[0].item_name }}</a>
               </template>
-              <a-rate v-model:value="comments.rating" disabled></a-rate>
+              <a-rate v-model:value="comments[0].rating" disabled></a-rate>
               <p>
-                {{ comments.content }}
+                {{ comments[0].content }}
               </p>
             </a-card>
             <a-empty
@@ -232,7 +232,7 @@
       const route = useRoute()
       const order_id = route.params.id
       const status = ref()
-      const comments = ref({})
+      const comments = ref()
       const selectStatus = ref(undefined)
       const modalVisible = ref(false)
       const expressCompanyOption = ref([])
@@ -272,6 +272,7 @@
         getOrderComments(order_id)
           .then((resp) => {
             comments.value = resp.data
+            console.log('111', comments.value)
           })
           .catch(() => {
             console.log('该商品暂无评论')
@@ -339,6 +340,7 @@
           status: '4',
           expect_end_time: order_data.value.expect_end_time,
           expect_start_time: order_data.value.expect_start_time,
+          express_status: true,
         }
         updateOrder(order_id, data)
           .then(() => {
