@@ -45,9 +45,9 @@
     <div class="login-container-tips">
       基于vue{{ dependencies['vue'] }}
       + ant-design-vue
-      {{ dependencies['ant-design-vue'] }}开发
+      {{ dependencies['ant-design-vue'] }}开发 Version 20230504.
       <br />
-      Developed by MaLiXie Team with
+      Developed for ZuLiPai by MaLiXie Team with
       <heart-outlined></heart-outlined>
     </div>
   </div>
