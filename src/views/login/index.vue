@@ -93,13 +93,7 @@
         immediate: true,
       },
     },
-    mounted() {
-      this.form.username = 'admin1'
-      this.form.password = 'admin1admin1'
-      /*  setTimeout(() => {
-        this.handleSubmit()
-      }, 3000) */
-    },
+    mounted() {},
     methods: {
       ...mapActions({
         login: 'user/login',
