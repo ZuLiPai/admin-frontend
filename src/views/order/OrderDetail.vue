@@ -171,6 +171,9 @@
         @finish="onFinish"
         @finishFailed="onFinishFailed"
       >
+        <p>客户姓名：{{ order_data.address_detail.name }}</p>
+        <p>客户电话：{{ order_data.address_detail.phone }}</p>
+        <p>客户地址：{{ order_data.address_detail.address }}</p>
         <a-form-item
           name="express_name_id"
           label="快递公司"
