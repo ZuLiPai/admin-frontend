@@ -39,18 +39,18 @@
     <a-col :lg="12" :xs="24">
       <a-card title="相机订单">
         <a-row :style="{ minHeight: '250px' }">
-          <a-col :span="12">
+          <a-col :span="24">
             <div
               id="chartTransactionCategory"
               :style="{ height: '100%', width: '100%' }"
             ></div>
           </a-col>
-          <a-col :span="12">
-            <div
-              id="chartTransactionBrand"
-              :style="{ height: '100%', width: '100%' }"
-            ></div>
-          </a-col>
+          <!--          <a-col :span="12">-->
+          <!--            <div-->
+          <!--              id="chartTransactionBrand"-->
+          <!--              :style="{ height: '100%', width: '100%' }"-->
+          <!--            ></div>-->
+          <!--          </a-col>-->
         </a-row>
       </a-card>
     </a-col>
@@ -120,9 +120,9 @@
           date.setDate(todayDate.getDate() - 6 + i)
           datesArray.push(date.toISOString().slice(0, 10))
         }
-        refreshPage()
+        refreshPage().then(initChart)
       })
-      const refreshPage = () => {
+      async function refreshPage() {
         //Initiate values to zero
         todaySaleMoney.value = 0
         monthSaleMoney.value = 0
@@ -209,38 +209,35 @@
           rating.value.push(five)
           console.log(rating.value)
         })
-
         //Fourth Card
-        getAllTickets()
-          .then((resp) => {
-            resp.data.forEach((r) => {
-              messages.push(r)
-            })
-            messages.forEach((t) => {
-              const ticketDateString = t.ticket_time.slice(0, 10)
-              const ticketDate = new Date(
-                t.ticket_time.substring(0, 4),
-                t.ticket_time.substring(5, 7) - 1,
-                t.ticket_time.substring(8, 10)
-              )
-              const earlierDate = new Date(
-                datesArray[0].substring(0, 4),
-                datesArray[0].substring(5, 7) - 1,
-                datesArray[0].substring(8, 10)
-              )
-              if (ticketDate >= earlierDate) {
-                for (let i = 0; i < 7; i++) {
-                  if (ticketDateString === datesArray[i]) {
-                    allTicketsStatistic[i] += 1
-                    if (t.ticket_status === 'true') {
-                      handledTicketStatistic[i] += 1
-                    }
+        getAllTickets().then((resp) => {
+          resp.data.forEach((r) => {
+            messages.push(r)
+          })
+          messages.forEach((t) => {
+            const ticketDateString = t.ticket_time.slice(0, 10)
+            const ticketDate = new Date(
+              t.ticket_time.substring(0, 4),
+              t.ticket_time.substring(5, 7) - 1,
+              t.ticket_time.substring(8, 10)
+            )
+            const earlierDate = new Date(
+              datesArray[0].substring(0, 4),
+              datesArray[0].substring(5, 7) - 1,
+              datesArray[0].substring(8, 10)
+            )
+            if (ticketDate >= earlierDate) {
+              for (let i = 0; i < 7; i++) {
+                if (ticketDateString === datesArray[i]) {
+                  allTicketsStatistic[i] += 1
+                  if (t.ticket_status === 'true') {
+                    handledTicketStatistic[i] += 1
                   }
                 }
               }
-            })
+            }
           })
-          .then(() => initChart())
+        })
       }
       function formatDate(date) {
         var d = new Date(date),
@@ -283,28 +280,28 @@
           ],
         })
 
-        let chartTransactionBrand = echarts.init(
-          document.getElementById('chartTransactionBrand')
-        )
-        chartTransactionBrand.setOption({
-          tooltip: {
-            trigger: 'item',
-          },
-          yAxis: {
-            type: 'category',
-            data: ['佳能', '索尼', '大疆', '尼康', '富士'],
-          },
-          xAxis: {
-            type: 'value',
-          },
-          series: [
-            {
-              data: [298, 200, 150, 80, 70],
-              type: 'bar',
-              color: '#66ccff',
-            },
-          ],
-        })
+        // let chartTransactionBrand = echarts.init(
+        //   document.getElementById('chartTransactionBrand')
+        // )
+        // chartTransactionBrand.setOption({
+        //   tooltip: {
+        //     trigger: 'item',
+        //   },
+        //   yAxis: {
+        //     type: 'category',
+        //     data: ['佳能', '索尼', '大疆', '尼康', '富士'],
+        //   },
+        //   xAxis: {
+        //     type: 'value',
+        //   },
+        //   series: [
+        //     {
+        //       data: [298, 200, 150, 80, 70],
+        //       type: 'bar',
+        //       color: '#66ccff',
+        //     },
+        //   ],
+        // })
 
         let chartRating = echarts.init(document.getElementById('chartRating'))
         chartRating.setOption({
@@ -361,7 +358,7 @@
         window.onresize = function () {
           //自适应大小
           chartTransactionCategory.resize()
-          chartTransactionBrand.resize()
+          // chartTransactionBrand.resize()
           chartRating.resize()
           chartTicket.resize()
         }
