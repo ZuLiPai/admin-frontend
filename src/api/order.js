@@ -59,3 +59,11 @@ export async function createExpress(id, data) {
     data: data,
   })
 }
+
+export async function updateCompensation(id, data) {
+  return request({
+    url: `/finance/${id}/`,
+    method: 'patch',
+    data: data,
+  })
+}

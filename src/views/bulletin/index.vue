@@ -123,6 +123,7 @@
           createBulletin(data).then(() => {
             confirmLoading.value = false
             newTitle.value = ''
+            fileList.value = []
             refreshBulletins()
           })
         } else {

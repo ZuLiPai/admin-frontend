@@ -150,7 +150,7 @@
           title="确认已处理赔偿问题？"
           ok-text="是"
           cancel-text="否"
-          @confirm="confirmCompensation"
+          @confirm="showCompensationModal"
         >
           <a-button
             type="primary"
@@ -171,9 +171,9 @@
         @finish="onFinish"
         @finishFailed="onFinishFailed"
       >
-        <p>客户姓名：{{ order_data.address_detail.name }}</p>
-        <p>客户电话：{{ order_data.address_detail.phone }}</p>
-        <p>客户地址：{{ order_data.address_detail.address }}</p>
+        <p>客户姓名：{{ expressAddress.name }}</p>
+        <p>客户电话：{{ expressAddress.phone }}</p>
+        <p>客户地址：{{ expressAddress.address }}</p>
         <a-form-item
           name="express_name_id"
           label="快递公司"
@@ -193,6 +193,27 @@
         </a-form-item>
       </a-form>
     </a-modal>
+    <!--赔偿框-->
+    <a-modal
+      v-model:visible="compensationVisible"
+      title="订单赔偿"
+      @ok="confirmCompensation"
+    >
+      <a-form
+        :model="CompensationFormState"
+        name="basic"
+        @finish="confirmCompensation"
+        @finishFailed="onFinishFailed"
+      >
+        <a-form-item
+          label="赔偿金额"
+          name="compensate"
+          :rules="[{ required: true, message: '请输入赔偿金额' }]"
+        >
+          <a-input v-model:value="CompensationFormState.compensate" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </div>
 </template>
 
@@ -204,6 +225,7 @@
     getExpressCompany,
     getOrderComments,
     getOrderDetail,
+    updateCompensation,
     updateOrder,
   } from '@/api/order'
   import { message } from 'ant-design-vue'
@@ -244,11 +266,20 @@
         express_name_id: '',
         express_number: '',
       })
+      const CompensationFormState = reactive({
+        compensate: '',
+      })
+      const compensationVisible = ref(false)
       const comments = reactive({
         username: '',
         item: '',
         content: '',
         rating: '',
+      })
+      const expressAddress = reactive({
+        name: '',
+        phone: '',
+        address: '',
       })
       const expressText1 = ref()
       const expressText2 = ref()
@@ -270,6 +301,9 @@
           .then((resp) => {
             order_data.value = resp.data
             status.value = resp.data.status
+            expressAddress.name = order_data.value.name
+            expressAddress.phone = order_data.value.phone
+            expressAddress.address = order_data.value.address
             handleExpress(order_data.value.express_data)
           })
           .catch(() => {
@@ -414,41 +448,54 @@
             message.error('出现错误，请重试')
           })
       }
+      const showCompensationModal = () => {
+        compensationVisible.value = true
+      }
       const confirmCompensation = () => {
-        // 获取当前时间
-        const currentDateTime = new Date()
-        const year = currentDateTime.getFullYear()
-        const month = ('0' + (currentDateTime.getMonth() + 1)).slice(-2)
-        const day = ('0' + currentDateTime.getDate()).slice(-2)
-        const hour = ('0' + currentDateTime.getHours()).slice(-2)
-        const minute = ('0' + currentDateTime.getMinutes()).slice(-2)
-        const second = ('0' + currentDateTime.getSeconds()).slice(-2)
-        const datetime =
-          year +
-          '-' +
-          month +
-          '-' +
-          day +
-          ' ' +
-          hour +
-          ':' +
-          minute +
-          ':' +
-          second
-        // todo: 财务表compensate还没标注赔偿金额
-        const data = {
-          id: order_id,
-          status: '6',
-          expect_end_time: order_data.value.expect_end_time,
-          expect_start_time: order_data.value.expect_start_time,
-          order_end_time: datetime,
-        }
-        updateOrder(order_id, data)
+        updateCompensation(order_data.value.finance_order[0].id, {
+          compensate: CompensationFormState.compensate,
+        })
           .then(() => {
-            message.success(`已结束订单`)
-            refreshPage(order_id)
+            // 获取当前时间
+            const currentDateTime = new Date()
+            const year = currentDateTime.getFullYear()
+            const month = ('0' + (currentDateTime.getMonth() + 1)).slice(-2)
+            const day = ('0' + currentDateTime.getDate()).slice(-2)
+            const hour = ('0' + currentDateTime.getHours()).slice(-2)
+            const minute = ('0' + currentDateTime.getMinutes()).slice(-2)
+            const second = ('0' + currentDateTime.getSeconds()).slice(-2)
+            const datetime =
+              year +
+              '-' +
+              month +
+              '-' +
+              day +
+              ' ' +
+              hour +
+              ':' +
+              minute +
+              ':' +
+              second
+            const data = {
+              id: order_id,
+              status: '6',
+              expect_end_time: order_data.value.expect_end_time,
+              expect_start_time: order_data.value.expect_start_time,
+              order_end_time: datetime,
+            }
+            updateOrder(order_id, data)
+              .then(() => {
+                compensationVisible.value = false
+                message.success(`已结束订单`)
+                refreshPage(order_id)
+              })
+              .catch(() => {
+                compensationVisible.value = false
+                message.error('出现错误，请重试')
+              })
           })
           .catch(() => {
+            compensationVisible.value = false
             message.error('出现错误，请重试')
           })
       }
@@ -463,6 +510,9 @@
         expressCompanyOption,
         expressText1,
         expressText2,
+        CompensationFormState,
+        compensationVisible,
+        expressAddress,
         showModal,
         statusText,
         handleChangeStatus,
@@ -473,6 +523,7 @@
         confirmExamine,
         confirmDamage,
         confirmCompensation,
+        showCompensationModal,
       }
     },
   })
