@@ -30,6 +30,7 @@
                 <a-select-option value="5">赔偿中</a-select-option>
                 <a-select-option value="6">已完成</a-select-option>
                 <a-select-option value="7">已取消</a-select-option>
+                <a-select-option value="8">已买断</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -154,6 +155,8 @@
         return '已完成'
       case 7:
         return '已取消'
+      case 8:
+        return '已买断'
       default:
         return '未知'
     }

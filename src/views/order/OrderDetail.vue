@@ -52,6 +52,7 @@
           <a-step title="赔偿中" description="向用户发起工单商议赔偿" />
           <a-step title="订单完成" description="" />
           <a-step title="已取消" description="" />
+          <a-step title="已买断" description="" />
         </a-steps>
       </a-col>
       <a-col :span="6">
@@ -69,6 +70,7 @@
           <a-select-option value="5">赔偿中</a-select-option>
           <a-select-option value="6">订单完成</a-select-option>
           <a-select-option value="7">已取消</a-select-option>
+          <a-select-option value="8">已买断</a-select-option>
         </a-select>
         <a-button
           type="primary"
@@ -248,6 +250,8 @@
         return '订单完成'
       case 7:
         return '已取消'
+      case 8:
+        return '已买断'
     }
   }
   export default defineComponent({
